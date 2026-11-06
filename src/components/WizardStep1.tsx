@@ -232,126 +232,129 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
           </div>
         </div>
 
-        {/* Bloco 3: Comitiva & Orçamento da Viagem */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-4">
-          {/* Integrantes na Comitiva */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-                <Users className="w-4 h-4 stroke-[2]" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 leading-tight">
-                  Integrantes na Comitiva
-                </h3>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  {comitivaCount === 1 ? '1 irmão viajando' : `${comitivaCount} irmãos na comitiva`}
-                </span>
-              </div>
+        {/* Bloco 3: Integrantes da Comitiva */}
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex items-center justify-between">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+              <Users className="w-4 h-4 stroke-[2]" />
             </div>
-
-            {/* Stepper Ergonômico */}
-            <div className="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl">
-              <button 
-                type="button"
-                onClick={() => {
-                  triggerHaptic('light');
-                  setComitivaCount(Math.max(1, comitivaCount - 1));
-                }}
-                className="w-8 h-8 bg-white rounded-lg shadow-2xs text-slate-800 font-bold flex items-center justify-center transition active:scale-90 text-sm hover:bg-slate-50"
-                aria-label="Diminuir"
-              >
-                -
-              </button>
-              <span className="w-6 text-center text-xs font-bold text-slate-900">
-                {comitivaCount}
-              </span>
-              <button 
-                type="button"
-                onClick={() => {
-                  triggerHaptic('light');
-                  setComitivaCount(comitivaCount + 1);
-                }}
-                className="w-8 h-8 bg-white rounded-lg shadow-2xs text-slate-800 font-bold flex items-center justify-center transition active:scale-90 text-sm hover:bg-slate-50"
-                aria-label="Aumentar"
-              >
-                +
-              </button>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                Integrantes na Comitiva
+              </h3>
+              <p className="text-[11px] text-slate-500 font-medium">
+                {comitivaCount === 1 ? '1 irmão viajando' : `${comitivaCount} irmãos na comitiva`}
+              </p>
             </div>
           </div>
 
-          {/* Divisor & Teto Orçamentário */}
-          <div className="border-t border-slate-100 pt-3.5 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-                  <Wallet className="w-4 h-4 stroke-[2]" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900 leading-tight">
-                    Teto / Verba da Viagem
-                  </h3>
-                  <span className="text-[11px] text-slate-500 font-medium">
-                    {temTetoPreAprovado ? 'Limite autorizado pela administração' : 'Viagem sem teto fixado (livre)'}
-                  </span>
-                </div>
-              </div>
+          {/* Stepper Ergonômico */}
+          <div className="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl">
+            <button 
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setComitivaCount(Math.max(1, comitivaCount - 1));
+              }}
+              className="w-8 h-8 bg-white rounded-lg shadow-2xs text-slate-800 font-bold flex items-center justify-center transition active:scale-90 text-sm hover:bg-slate-50"
+              aria-label="Diminuir"
+            >
+              -
+            </button>
+            <span className="w-6 text-center text-xs font-bold text-slate-900">
+              {comitivaCount}
+            </span>
+            <button 
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setComitivaCount(comitivaCount + 1);
+              }}
+              className="w-8 h-8 bg-white rounded-lg shadow-2xs text-slate-800 font-bold flex items-center justify-center transition active:scale-90 text-sm hover:bg-slate-50"
+              aria-label="Aumentar"
+            >
+              +
+            </button>
+          </div>
+        </div>
 
-              {/* Segmented Control Compacto */}
-              <div className="flex p-0.5 bg-slate-100 rounded-lg shrink-0">
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setTemTetoPreAprovado(true);
-                    if (!tetoPreAprovado || tetoPreAprovado <= 0) setTetoPreAprovado(5000);
-                  }}
-                  className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                    temTetoPreAprovado
-                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  Com Teto
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    setTemTetoPreAprovado(false);
-                  }}
-                  className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                    !temTetoPreAprovado
-                      ? 'bg-white text-slate-900 shadow-2xs font-bold'
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  Livre
-                </button>
+        {/* Bloco 4: Teto Orçamentário / Verba da Viagem */}
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                <Wallet className="w-4 h-4 stroke-[2]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                  Teto Orçamentário / Verba
+                </h3>
+                <p className="text-[11px] text-slate-500 font-medium">
+                  Limite autorizado pela administração ou tesouraria
+                </p>
               </div>
             </div>
+          </div>
 
-            {/* Campo de Valor e Sugestões sem Scrollbar */}
-            {temTetoPreAprovado && (
-              <div className="space-y-2 pt-1 animate-in fade-in duration-150">
-                <div className="relative">
-                  <input
-                    id="trip-teto"
-                    type="text"
-                    inputMode="numeric"
-                    value={formatCurrencyBRL(tetoPreAprovado)}
-                    onChange={(e) => {
-                      const parsed = parseCurrencyInput(e.target.value);
-                      setTetoPreAprovado(parsed.raw);
-                    }}
-                    onBlur={onBlurSave}
-                    placeholder="R$ 5.000,00"
-                    className="w-full h-11 px-3.5 text-base font-bold text-slate-900 bg-slate-50/60 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition"
-                  />
-                </div>
+          {/* Seletor Segmented: Com Teto vs Sem Teto */}
+          <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-xl">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setTemTetoPreAprovado(true);
+                if (!tetoPreAprovado || tetoPreAprovado <= 0) setTetoPreAprovado(5000);
+              }}
+              className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                temTetoPreAprovado
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>Com Teto Definido</span>
+            </button>
 
-                {/* 4 Sugestões Rápidas em Grid Perfeito (Sem barra de rolagem cortando) */}
-                <div className="grid grid-cols-4 gap-1.5 pt-0.5">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setTemTetoPreAprovado(false);
+              }}
+              className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                !temTetoPreAprovado
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>Sem Teto (Livre)</span>
+            </button>
+          </div>
+
+          {temTetoPreAprovado ? (
+            <div className="space-y-3 pt-0.5 animate-in fade-in duration-150">
+              <div>
+                <label htmlFor="trip-teto" className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Valor Autorizado (R$)
+                </label>
+                <input
+                  id="trip-teto"
+                  type="text"
+                  inputMode="numeric"
+                  value={formatCurrencyBRL(tetoPreAprovado)}
+                  onChange={(e) => {
+                    const parsed = parseCurrencyInput(e.target.value);
+                    setTetoPreAprovado(parsed.raw);
+                  }}
+                  onBlur={onBlurSave}
+                  placeholder="R$ 5.000,00"
+                  className="w-full h-11 px-3.5 text-base font-bold text-slate-900 bg-slate-50/60 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-1 focus:ring-slate-900 focus:border-slate-900 transition"
+                />
+              </div>
+
+              {/* 4 Sugestões Rápidas em Grid Perfeito (Sem barra de rolagem horizontal) */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] text-slate-500 font-medium block">Valores sugeridos:</span>
+                <div className="grid grid-cols-4 gap-1.5">
                   {[1500, 3000, 5000, 8000].map((val) => (
                     <button
                       key={val}
@@ -360,19 +363,23 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
                         triggerHaptic('light');
                         setTetoPreAprovado(val);
                       }}
-                      className={`h-8 rounded-lg text-xs font-semibold border transition cursor-pointer flex items-center justify-center ${
+                      className={`h-9 rounded-xl text-xs font-semibold border transition cursor-pointer flex items-center justify-center ${
                         tetoPreAprovado === val
                           ? 'bg-slate-900 text-white border-slate-900 shadow-2xs font-bold'
-                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                       }`}
                     >
-                      {`R$ ${(val / 1000).toLocaleString('pt-BR')}k`}
+                      {formatCurrencyBRL(val).replace(',00', '')}
                     </button>
                   ))}
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="p-3 bg-slate-50 border border-slate-200/70 rounded-xl text-slate-500 text-xs leading-relaxed">
+              As despesas da missão serão contabilizadas normalmente e somadas na prestação de contas, sem indicador de limite ou saldo restante.
+            </div>
+          )}
         </div>
 
         {/* Bloco 4: Objetivo do Atendimento */}
