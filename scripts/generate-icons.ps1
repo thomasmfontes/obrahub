@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-$srcPath = "C:\Users\thomas\.gemini\antigravity\brain\46dff35e-ea8e-4773-a0a6-e574ef9c7e21\.user_uploaded\media_1793983250313_f65c2faf.jpg"
+$srcPath = "C:\Users\thomas\.gemini\antigravity\brain\28de2434-19c2-48b7-a5e9-26e144d2dc07\.user_uploaded\media_1793989510906_79b7ad02.jpg"
 $destDir = "c:\Users\thomas\OneDrive\Documentos\Projetos\ObraHub\public"
 
 Copy-Item $srcPath (Join-Path $destDir "logo.jpg") -Force
