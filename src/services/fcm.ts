@@ -97,14 +97,36 @@ export function getPushPermissionState(): 'granted' | 'denied' | 'default' | 'un
   return Notification.permission;
 }
 
+export function playNotificationSound(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const audio = new Audio('/sounds/notification.mp3');
+    audio.volume = 0.9;
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn('Reprodução de áudio impedida ou aguardando interação:', err);
+      });
+    }
+  } catch (err) {
+    console.warn('Falha ao inicializar áudio de notificação:', err);
+  }
+}
+
 export async function triggerLocalNotification(options: {
   title: string;
   body: string;
   tag?: string;
   data?: any;
+  playSound?: boolean;
 }): Promise<boolean> {
   if (typeof window === 'undefined' || !('Notification' in window)) {
     return false;
+  }
+
+  // Reproduz o som de notificação personalizado se permitido
+  if (options.playSound !== false) {
+    playNotificationSound();
   }
 
   let permission = Notification.permission;

@@ -26,6 +26,8 @@ if (apiKey && projectId) {
         body: payload.notification?.body || 'Lembre-se de registrar suas atividades e despesas de hoje.',
         icon: '/icon.svg',
         badge: '/icon.svg',
+        sound: '/sounds/notification.mp3',
+        vibrate: [200, 100, 200],
         data: payload.data || {}
       };
 
