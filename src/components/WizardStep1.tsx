@@ -301,11 +301,13 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
             <button
               type="button"
               onClick={() => {
-                triggerHaptic('light');
-                setTemTetoPreAprovado(true);
-                if (!tetoPreAprovado || tetoPreAprovado <= 0) setTetoPreAprovado(5000);
+                if (!temTetoPreAprovado) {
+                  triggerHaptic('light');
+                  setTemTetoPreAprovado(true);
+                  if (!tetoPreAprovado || tetoPreAprovado <= 0) setTetoPreAprovado(5000);
+                }
               }}
-              className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+              className={`py-2 text-xs font-bold rounded-lg transition-colors duration-150 flex items-center justify-center space-x-1.5 cursor-pointer outline-none focus:outline-none ${
                 temTetoPreAprovado
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-500 hover:text-slate-800'
@@ -317,10 +319,12 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
             <button
               type="button"
               onClick={() => {
-                triggerHaptic('light');
-                setTemTetoPreAprovado(false);
+                if (temTetoPreAprovado) {
+                  triggerHaptic('light');
+                  setTemTetoPreAprovado(false);
+                }
               }}
-              className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+              className={`py-2 text-xs font-bold rounded-lg transition-colors duration-150 flex items-center justify-center space-x-1.5 cursor-pointer outline-none focus:outline-none ${
                 !temTetoPreAprovado
                   ? 'bg-white text-slate-900 shadow-xs'
                   : 'text-slate-500 hover:text-slate-800'
@@ -331,7 +335,7 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
           </div>
 
           {temTetoPreAprovado ? (
-            <div className="space-y-3 pt-0.5 animate-in fade-in duration-150">
+            <div className="space-y-3 pt-1">
               <div>
                 <label htmlFor="trip-teto" className="block text-xs font-semibold text-slate-700 mb-1.5">
                   Valor Autorizado (R$)
@@ -363,7 +367,7 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
                         triggerHaptic('light');
                         setTetoPreAprovado(val);
                       }}
-                      className={`h-9 rounded-xl text-xs font-semibold border transition cursor-pointer flex items-center justify-center ${
+                      className={`h-9 rounded-xl text-xs font-semibold border transition cursor-pointer flex items-center justify-center outline-none focus:outline-none ${
                         tetoPreAprovado === val
                           ? 'bg-slate-900 text-white border-slate-900 shadow-2xs font-bold'
                           : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
