@@ -143,8 +143,8 @@ export async function triggerLocalNotification(options: {
   try {
     const notif = new Notification(options.title, {
       body: options.body,
-      icon: '/icon.svg',
-      badge: '/badge.png',
+      icon: '/icon-192.png',
+      badge: '/favicon-32.png',
       tag: options.tag || 'obrahub-lembrete',
       data: options.data || { url: '/' }
     });
@@ -164,8 +164,8 @@ export async function triggerLocalNotification(options: {
         if (reg && 'showNotification' in reg) {
           await reg.showNotification(options.title, {
             body: options.body,
-            icon: '/icon.svg',
-            badge: '/badge.png',
+            icon: '/icon-192.png',
+            badge: '/favicon-32.png',
             tag: options.tag || 'obrahub-lembrete',
             vibrate: [200, 100, 200],
             data: options.data || { url: '/' }
@@ -196,8 +196,8 @@ export function sendDelayedTestNotification(
       if (remaining <= 0) {
         clearInterval(interval);
         triggerLocalNotification({
-          title: "ObraHub: Lembrete de Viagem 🚀",
-          body: "Hora de registrar suas despesas e comprovantes do dia de hoje!",
+          title: "Prestação de Contas",
+          body: "Mantenha seus registros de viagem atualizados.",
           tag: "obrahub-lembrete-teste",
           data: { url: '/?action=diario_hoje', step: 'step2' }
         }).then(resolve);

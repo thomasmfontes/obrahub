@@ -108,8 +108,8 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
     }
 
     const ok = await triggerLocalNotification({
-      title: "ObraHub: Lembrete de Viagem 🔔",
-      body: "Você tem recibos ou atividades de hoje para lançar? Toque aqui para preencher.",
+      title: "Despesas de Hoje",
+      body: "Não se esqueça de anexar os comprovantes do dia.",
       tag: "teste-imediato",
       data: { url: '/', step: 'step2' },
       playSound: somAtivo

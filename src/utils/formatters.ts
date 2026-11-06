@@ -162,24 +162,24 @@ export interface WhatsAppSummaryData {
  */
 export function generateWhatsAppSummary(data: WhatsAppSummaryData): string {
   const lines: string[] = [];
-  lines.push('🏛️ *OBRAHUB · PRESTAÇÃO DE CONTAS MINISTERIAL*');
-  lines.push(`📋 *Protocolo:* #${data.protocolo}`);
-  lines.push(`👤 *Irmão do Ministério:* ${data.irmao || 'Irmão Responsável'}`);
+  lines.push('*OBRAHUB · PRESTAÇÃO DE CONTAS MINISTERIAL*');
+  lines.push(`• *Protocolo:* #${data.protocolo}`);
+  lines.push(`• *Responsável:* ${data.irmao || 'Irmão Responsável'}`);
   if (data.ministerio) {
-    lines.push(`🏢 *Ministério / Atendimento:* ${data.ministerio}`);
+    lines.push(`• *Ministério / Atendimento:* ${data.ministerio}`);
   }
-  lines.push(`📍 *Localidade de Atendimento:* ${data.destino || 'Não especificada'}`);
+  lines.push(`• *Localidade / Polo:* ${data.destino || 'Não especificada'}`);
   
   if (data.dataSaida && data.dataRetorno) {
-    lines.push(`🗓️ *Período:* ${formatPillDate(data.dataSaida)} a ${formatPillDate(data.dataRetorno)} (${data.diasAtendimento || 1} dias)`);
+    lines.push(`• *Período:* ${formatPillDate(data.dataSaida)} a ${formatPillDate(data.dataRetorno)} (${data.diasAtendimento || 1} dias)`);
   }
   if (data.comitivaCount) {
-    lines.push(`👥 *Comitiva:* ${data.comitivaCount} irmão(s)`);
+    lines.push(`• *Comitiva:* ${data.comitivaCount} integrante(s)`);
   }
 
   lines.push('');
-  lines.push('━━━━━━━━━━━━━━━━━━━━');
-  lines.push('💰 *RESUMO FINANCEIRO*');
+  lines.push('──────────────────────────────');
+  lines.push('*RESUMO FINANCEIRO*');
   lines.push(`• *Total Executado:* ${formatCurrencyBRL(data.totalRealizado)}`);
   if (data.tetoPreAprovado !== undefined) {
     lines.push(`• *Teto Pré-Aprovado:* ${formatCurrencyBRL(data.tetoPreAprovado)}`);
@@ -191,16 +191,16 @@ export function generateWhatsAppSummary(data: WhatsAppSummaryData): string {
 
   if (data.despesas && data.despesas.length > 0) {
     lines.push('');
-    lines.push('📑 *Detalhamento das Despesas:*');
+    lines.push('*Detalhamento das Despesas:*');
     data.despesas.forEach((d) => {
       const docs = d.comprovantes ? ` (${d.comprovantes} doc)` : '';
-      lines.push(`  ▪ ${d.rubrica}: ${formatCurrencyBRL(d.valor)}${docs}`);
+      lines.push(`  - ${d.rubrica}: ${formatCurrencyBRL(d.valor)}${docs}`);
     });
   }
 
   lines.push('');
-  lines.push('━━━━━━━━━━━━━━━━━━━━');
-  lines.push('✅ *Declaração:* Despesas atestadas para fins ministeriais idôneos e registradas no sistema da Obra.');
+  lines.push('──────────────────────────────');
+  lines.push('*Declaração:* Despesas atestadas para fins ministeriais idôneos e registradas no sistema da Obra.');
   lines.push('');
   lines.push('A paz de Deus a todos os irmãos da Tesouraria e Ministério.');
 

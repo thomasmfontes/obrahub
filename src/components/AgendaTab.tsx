@@ -327,13 +327,13 @@ export const AgendaTab: React.FC<AgendaTabProps> = ({
 
   const handleShareWhatsApp = (item: AgendaItem) => {
     triggerHaptic('light');
-    const msg = `*Escala Ministerial CCB*\n\n` +
-      `📅 *Evento:* ${item.nm_titulo}\n` +
-      `📍 *Local:* ${item.nm_local}\n` +
-      `👤 *Responsável:* ${item.nm_responsavel}\n` +
-      `📆 *Data:* ${formatDisplayDateRange(item.t_data_inicio, item.t_data_fim)}\n` +
-      `👥 *Participantes:* ${item.nr_participantes_esperados || 0} irmãos\n` +
-      `📝 *Obs:* ${item.t_observacao || 'Sem observações adicionais.'}`;
+    const msg = `*Escala de Atendimento Ministerial*\n\n` +
+      `• *Atendimento:* ${item.nm_titulo}\n` +
+      `• *Localidade:* ${item.nm_local}\n` +
+      `• *Responsável:* ${item.nm_responsavel}\n` +
+      `• *Data:* ${formatDisplayDateRange(item.t_data_inicio, item.t_data_fim)}\n` +
+      `• *Participantes:* ${item.nr_participantes_esperados || 0} integrante(s)\n` +
+      (item.t_observacao ? `• *Observações:* ${item.t_observacao}` : '');
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   };
 

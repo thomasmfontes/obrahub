@@ -21,11 +21,11 @@ if (apiKey && projectId) {
     const messaging = firebase.messaging();
 
     messaging.onBackgroundMessage((payload) => {
-      const title = payload.notification?.title || 'ObraHub: Hora de fechar o dia!';
+      const title = payload.notification?.title || 'Diário de Bordo';
       const options = {
-        body: payload.notification?.body || 'Lembre-se de registrar suas atividades e despesas de hoje.',
-        icon: '/icon.svg',
-        badge: '/badge.png',
+        body: payload.notification?.body || 'Registre suas atividades e despesas de hoje.',
+        icon: '/icon-192.png',
+        badge: '/favicon-32.png',
         sound: '/sounds/notification.mp3',
         vibrate: [200, 100, 200],
         data: payload.data || {}
