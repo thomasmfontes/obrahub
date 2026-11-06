@@ -211,13 +211,19 @@ export const WizardStep3: React.FC<WizardStep3Props> = ({
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Prestação de Contas
             </span>
-            <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
-              totalRealizado <= tetoPreAprovado 
-                ? 'text-emerald-700 bg-emerald-50 border-emerald-200/60' 
-                : 'text-rose-700 bg-rose-50 border-rose-200/60'
-            }`}>
-              {totalRealizado <= tetoPreAprovado ? 'No Orçamento' : 'Excedeu Teto'}
-            </span>
+            {tetoPreAprovado > 0 ? (
+              <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
+                totalRealizado <= tetoPreAprovado 
+                  ? 'text-emerald-700 bg-emerald-50 border-emerald-200/60' 
+                  : 'text-rose-700 bg-rose-50 border-rose-200/60'
+              }`}>
+                {totalRealizado <= tetoPreAprovado ? 'No Orçamento' : 'Excedeu Teto'}
+              </span>
+            ) : (
+              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full border text-slate-700 bg-slate-100 border-slate-200/80">
+                Sem Teto Fixo
+              </span>
+            )}
           </div>
 
           <div>
@@ -229,52 +235,79 @@ export const WizardStep3: React.FC<WizardStep3Props> = ({
             </span>
           </div>
 
-          {/* Grid de 3 métricas financeiras limpas (sem caixas aninhadas) */}
+          {/* Grid de métricas financeiras */}
           <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100">
-            <div>
-              <span className="text-[11px] text-slate-400 block font-medium">Teto Autorizado</span>
-              <span className="text-xs font-bold text-slate-800 block mt-0.5">
-                {formatCurrencyBRL(tetoPreAprovado)}
-              </span>
-            </div>
-            <div>
-              <span className="text-[11px] text-slate-400 block font-medium">Saldo Restante</span>
-              <span className={`text-xs font-bold block mt-0.5 ${
-                saldoRestante >= 0 ? 'text-emerald-700' : 'text-rose-600'
-              }`}>
-                {formatCurrencyBRL(saldoRestante)}
-              </span>
-            </div>
-            <div>
-              <span className="text-[11px] text-slate-400 block font-medium">Média Diária</span>
-              <span className="text-xs font-bold text-slate-700 block mt-0.5">
-                {formatCurrencyBRL(mediaDiaria)}
-              </span>
-            </div>
+            {tetoPreAprovado > 0 ? (
+              <>
+                <div>
+                  <span className="text-[11px] text-slate-400 block font-medium">Teto Autorizado</span>
+                  <span className="text-xs font-bold text-slate-800 block mt-0.5">
+                    {formatCurrencyBRL(tetoPreAprovado)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[11px] text-slate-400 block font-medium">Saldo Restante</span>
+                  <span className={`text-xs font-bold block mt-0.5 ${
+                    saldoRestante >= 0 ? 'text-emerald-700' : 'text-rose-600'
+                  }`}>
+                    {formatCurrencyBRL(saldoRestante)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[11px] text-slate-400 block font-medium">Média Diária</span>
+                  <span className="text-xs font-bold text-slate-700 block mt-0.5">
+                    {formatCurrencyBRL(mediaDiaria)}
+                  </span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <span className="text-[11px] text-slate-400 block font-medium">Média Diária</span>
+                  <span className="text-xs font-bold text-slate-800 block mt-0.5">
+                    {formatCurrencyBRL(mediaDiaria)}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[11px] text-slate-400 block font-medium">Comprovantes</span>
+                  <span className="text-xs font-bold text-slate-800 block mt-0.5">
+                    {despesas.length} {despesas.length === 1 ? 'item' : 'itens'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[11px] text-slate-400 block font-medium">Dias em Campo</span>
+                  <span className="text-xs font-bold text-slate-800 block mt-0.5">
+                    {diasMissao} {diasMissao === 1 ? 'dia' : 'dias'}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
 
-          {/* Barra de progresso orçamentário ultrafina */}
-          <div className="space-y-1 pt-1">
-            <div 
-              role="progressbar"
-              aria-valuenow={Math.round(percExecucao)}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label="Percentual do teto utilizado"
-              className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden"
-            >
+          {/* Barra de progresso orçamentário ultrafina (apenas se houver teto pré-aprovado) */}
+          {tetoPreAprovado > 0 && (
+            <div className="space-y-1 pt-1">
               <div 
-                className={`h-full rounded-full transition-all duration-500 ${
-                  totalRealizado <= tetoPreAprovado ? 'bg-[#0B1B2B]' : 'bg-rose-600'
-                }`}
-                style={{ width: `${Math.min(100, percExecucao)}%` }}
-              />
+                role="progressbar"
+                aria-valuenow={Math.round(percExecucao)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label="Percentual do teto utilizado"
+                className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden"
+              >
+                <div 
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    totalRealizado <= tetoPreAprovado ? 'bg-[#0B1B2B]' : 'bg-rose-600'
+                  }`}
+                  style={{ width: `${Math.min(100, percExecucao)}%` }}
+                />
+              </div>
+              <div className="flex justify-between text-[11px] text-slate-400 font-medium">
+                <span>{Math.round(percExecucao)}% do orçamento utilizado</span>
+                <span>{saldoRestante >= 0 ? 'Regular' : 'Ajuste pendente'}</span>
+              </div>
             </div>
-            <div className="flex justify-between text-[11px] text-slate-400 font-medium">
-              <span>{Math.round(percExecucao)}% do orçamento utilizado</span>
-              <span>{saldoRestante >= 0 ? 'Regular' : 'Ajuste pendente'}</span>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Card 2: Lançamentos de Despesas (Extrato Limpo com Linhas Divisórias) */}

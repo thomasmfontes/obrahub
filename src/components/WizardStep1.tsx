@@ -9,10 +9,11 @@ import {
   Users, 
   FileText, 
   ChevronRight, 
-  Loader2 
+  Loader2,
+  Wallet
 } from 'lucide-react';
 import type { Missionario, PoloMissionario } from '../types';
-import { triggerHaptic } from '../utils/formatters';
+import { triggerHaptic, formatCurrencyBRL, parseCurrencyInput } from '../utils/formatters';
 import { CustomSelect } from './CustomSelect';
 import { buscarLocalidades } from '../services/localidades';
 
@@ -31,6 +32,10 @@ interface WizardStep1Props {
   setComitivaCount: (val: number) => void;
   objetivoPrimario: string;
   setObjetivoPrimario: (val: string) => void;
+  tetoPreAprovado: number;
+  setTetoPreAprovado: (val: number) => void;
+  temTetoPreAprovado: boolean;
+  setTemTetoPreAprovado: (val: boolean) => void;
   isSaving: boolean;
   onNext: () => void;
   onBack: () => void;
@@ -55,6 +60,10 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
   setComitivaCount,
   objetivoPrimario,
   setObjetivoPrimario,
+  tetoPreAprovado,
+  setTetoPreAprovado,
+  temTetoPreAprovado,
+  setTemTetoPreAprovado,
   isSaving,
   onNext,
   onBack,
@@ -262,6 +271,108 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
               +
             </button>
           </div>
+        </div>
+
+        {/* Bloco: Teto Orçamentário / Verba da Viagem */}
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-3.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100">
+                <Wallet className="w-4 h-4 stroke-[2]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                  Teto Orçamentário / Verba
+                </h3>
+                <p className="text-[11px] text-slate-500 font-medium">
+                  Limite autorizado pela administração ou tesouraria
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Seletor Segmented: Com Teto vs Sem Teto */}
+          <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-xl">
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setTemTetoPreAprovado(true);
+                if (!tetoPreAprovado || tetoPreAprovado <= 0) setTetoPreAprovado(5000);
+              }}
+              className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                temTetoPreAprovado
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>Com Teto Definido</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                setTemTetoPreAprovado(false);
+              }}
+              className={`py-2 text-xs font-bold rounded-lg transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+                !temTetoPreAprovado
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>Sem Teto (Livre)</span>
+            </button>
+          </div>
+
+          {temTetoPreAprovado ? (
+            <div className="space-y-2.5 pt-1 animate-in fade-in duration-150">
+              <label htmlFor="trip-teto" className="block text-xs font-semibold text-slate-700">
+                Valor Autorizado (R$)
+              </label>
+              <div className="relative">
+                <input
+                  id="trip-teto"
+                  type="text"
+                  inputMode="numeric"
+                  value={formatCurrencyBRL(tetoPreAprovado)}
+                  onChange={(e) => {
+                    const parsed = parseCurrencyInput(e.target.value);
+                    setTetoPreAprovado(parsed.raw);
+                  }}
+                  onBlur={onBlurSave}
+                  placeholder="R$ 5.000,00"
+                  className="w-full h-11 px-3.5 text-base font-black text-slate-900 bg-slate-50/50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition"
+                />
+              </div>
+
+              {/* Sugestões Rápidas de Teto */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 pt-0.5">
+                <span className="text-[11px] text-slate-400 shrink-0 font-medium mr-1">Sugestões:</span>
+                {[1500, 3000, 5000, 8000].map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptic('light');
+                      setTetoPreAprovado(val);
+                    }}
+                    className={`px-2.5 py-1 text-xs rounded-lg font-semibold border transition cursor-pointer shrink-0 ${
+                      tetoPreAprovado === val
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-2xs'
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    {formatCurrencyBRL(val)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="p-3 bg-slate-50 border border-slate-200/70 rounded-xl text-slate-500 text-xs leading-relaxed">
+              As despesas da missão serão contabilizadas normalmente e somadas na prestação de contas, sem indicador de limite ou saldo restante.
+            </div>
+          )}
         </div>
 
         {/* Bloco 4: Objetivo do Atendimento */}

@@ -339,7 +339,7 @@ export async function saveRelatorioBasico(
         data.t_objetivo_primario?.trim() || '',
         data.nr_etapa_atual || 1,
         data.t_status || 'Em Aberto',
-        data.dc_teto_pre_aprovado || 5000,
+        data.dc_teto_pre_aprovado !== undefined ? Number(data.dc_teto_pre_aprovado) : 5000,
         data.dc_total_realizado || 0,
         Boolean(data.t_concordancia_fiscal)
       ]

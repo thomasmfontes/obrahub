@@ -276,7 +276,8 @@ export default function App() {
   }, [photoPreview]);
 
   // Prestação de Contas (Passo 3)
-  const [tetoPreAprovado] = useState(5000);
+  const [tetoPreAprovado, setTetoPreAprovado] = useState<number>(5000);
+  const [temTetoPreAprovado, setTemTetoPreAprovado] = useState<boolean>(true);
   const [declaracaoAceita, setDeclaracaoAceita] = useState(false);
   const [despesas, setDespesas] = useState<DespesaRubrica[]>([]);
 
@@ -295,9 +296,19 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const saveQueueRef = useRef<SaveQueue | null>(null);
   if (!saveQueueRef.current) saveQueueRef.current = new SaveQueue(setSaveStatus);
-  type BasicEditing = { missionario: string; poloDestino: string; dataSaida: string; dataRetorno: string; comitivaCount: number; objetivoPrimario: string; declaracaoAceita: boolean };
+  type BasicEditing = { 
+    missionario: string; 
+    poloDestino: string; 
+    dataSaida: string; 
+    dataRetorno: string; 
+    comitivaCount: number; 
+    objetivoPrimario: string; 
+    declaracaoAceita: boolean;
+    tetoPreAprovado?: number;
+    temTetoPreAprovado?: boolean;
+  };
   type DayEditing = { dia: string; deslocamentoAtivo: boolean; kmPercorridos: string; tempoTrajeto: string; resumoAtividades: string };
-  const basicEditingRef = useRef<BasicEditing>({ missionario: '', poloDestino: '', dataSaida: '', dataRetorno: '', comitivaCount: 1, objetivoPrimario: '', declaracaoAceita: false });
+  const basicEditingRef = useRef<BasicEditing>({ missionario: '', poloDestino: '', dataSaida: '', dataRetorno: '', comitivaCount: 1, objetivoPrimario: '', declaracaoAceita: false, tetoPreAprovado: 5000, temTetoPreAprovado: true });
   const currentDayEditingRef = useRef<DayEditing>({ dia: '', deslocamentoAtivo: false, kmPercorridos: '', tempoTrajeto: '', resumoAtividades: '' });
   const reportIdentityRef = useRef({ id: '', protocolo: '' });
   const lastReportSavedRef = useRef<RelatorioViagem | null>(null);
@@ -538,7 +549,9 @@ export default function App() {
       t_objetivo_primario: basic.objetivoPrimario.trim(),
       nr_etapa_atual: 1,
       t_status: 'Em Aberto',
-      dc_teto_pre_aprovado: tetoPreAprovado,
+      dc_teto_pre_aprovado: (basic.temTetoPreAprovado ?? temTetoPreAprovado)
+        ? (basic.tetoPreAprovado ?? tetoPreAprovado)
+        : 0,
       dc_total_realizado: totalOverride ?? totalRealizado,
       t_concordancia_fiscal: basic.declaracaoAceita
     };
@@ -694,10 +707,12 @@ export default function App() {
     setFotos([]);
     setDespesas([]);
     setDeclaracaoAceita(false);
+    setTetoPreAprovado(5000);
+    setTemTetoPreAprovado(true);
     currentDayEditingRef.current = {
       dia: initial.dataSaida, deslocamentoAtivo: false, kmPercorridos: '', tempoTrajeto: '', resumoAtividades: ''
     };
-    resetSaveSession('', novoProtocolo, { ...initial, declaracaoAceita: false });
+    resetSaveSession('', novoProtocolo, { ...initial, declaracaoAceita: false, tetoPreAprovado: 5000, temTetoPreAprovado: true });
     setIdDiario('');
     queueBasicSave(undefined, 0);
 
@@ -719,9 +734,14 @@ export default function App() {
     setComitivaCount(rel.nr_integrantes_comitiva || 1);
     setObjetivoPrimario(rel.t_objetivo_primario || '');
     setDeclaracaoAceita(Boolean(rel.t_concordancia_fiscal));
+    const tetoVal = Number(rel.dc_teto_pre_aprovado);
+    const hasTeto = !isNaN(tetoVal) && tetoVal > 0;
+    setTetoPreAprovado(hasTeto ? tetoVal : 5000);
+    setTemTetoPreAprovado(hasTeto);
     resetSaveSession(rel.id_relatorio || '', rel.nm_documento_protocolo, {
       missionario: rel.nm_missionario || '', poloDestino: rel.nm_polo_destino || '', dataSaida: safeDataSaida, dataRetorno: safeDataRetorno,
-      comitivaCount: rel.nr_integrantes_comitiva || 1, objetivoPrimario: rel.t_objetivo_primario || '', declaracaoAceita: Boolean(rel.t_concordancia_fiscal)
+      comitivaCount: rel.nr_integrantes_comitiva || 1, objetivoPrimario: rel.t_objetivo_primario || '', declaracaoAceita: Boolean(rel.t_concordancia_fiscal),
+      tetoPreAprovado: hasTeto ? tetoVal : 5000, temTetoPreAprovado: hasTeto
     });
     setDespesas([]);
     setIdDiario('');
@@ -782,8 +802,9 @@ export default function App() {
   const mediaDiaria = useMemo(() => {
     return diasMissao > 0 ? totalRealizado / diasMissao : totalRealizado;
   }, [totalRealizado, diasMissao]);
-  const saldoRestante = tetoPreAprovado - totalRealizado;
-  const percExecucao = tetoPreAprovado > 0 ? Math.min(100, Math.round((totalRealizado / tetoPreAprovado) * 100)) : 0;
+  const activeTeto = temTetoPreAprovado ? tetoPreAprovado : 0;
+  const saldoRestante = activeTeto > 0 ? (activeTeto - totalRealizado) : 0;
+  const percExecucao = activeTeto > 0 ? Math.min(100, Math.round((totalRealizado / activeTeto) * 100)) : 0;
 
   // Persistência Passo 1 -> Passo 2
   const handleSaveStep1 = async (): Promise<RelatorioViagem | null> => {
@@ -1471,6 +1492,16 @@ export default function App() {
                 setObjetivoPrimario(val);
                 scheduleStep1Save({ objetivoPrimario: val });
               }}
+              tetoPreAprovado={tetoPreAprovado}
+              setTetoPreAprovado={(val) => {
+                setTetoPreAprovado(val);
+                scheduleStep1Save({ tetoPreAprovado: val, temTetoPreAprovado: true });
+              }}
+              temTetoPreAprovado={temTetoPreAprovado}
+              setTemTetoPreAprovado={(val) => {
+                setTemTetoPreAprovado(val);
+                scheduleStep1Save({ temTetoPreAprovado: val });
+              }}
               onBlurSave={() => { if (!navigationBusyRef.current) void saveQueueRef.current!.flush(); }}
               isSaving={isSaving}
               membros={membros}
@@ -1561,7 +1592,7 @@ export default function App() {
               dataRetorno={dataRetorno}
               comitivaCount={comitivaCount}
               totalRealizado={totalRealizado}
-              tetoPreAprovado={tetoPreAprovado}
+              tetoPreAprovado={temTetoPreAprovado ? tetoPreAprovado : 0}
               mediaDiaria={mediaDiaria}
               diasMissao={diasMissao}
               saldoRestante={saldoRestante}
