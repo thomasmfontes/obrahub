@@ -338,134 +338,133 @@ export const MembrosTab: React.FC<MembrosTabProps> = ({
           SUB-ABA 1: CORPO MINISTERIAL (IRMÃOS)
       ======================================================== */}
       {subTab === 'irmaos' && (
-        <div className="space-y-4 animate-in fade-in duration-150">
+        <div className="space-y-3.5 animate-in fade-in duration-150">
 
-      {/* Card de Destaque: Meu Perfil (Você) */}
-      {!searchTerm && currentMember && (
-        <div className="bg-gradient-to-br from-slate-900 via-[#132B45] to-slate-900 text-white rounded-2xl p-4 shadow-sm space-y-3 border border-slate-800">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center space-x-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Meu Perfil • Usuário Ativo neste Aparelho</span>
-            </span>
-            <button
-              type="button"
-              onClick={() => {
-                triggerHaptic('light');
-                onOpenProfile?.();
-              }}
-              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer active:scale-95"
-            >
-              <Pencil className="w-3 h-3" />
-              <span>Editar Meu Perfil</span>
-            </button>
+          {/* Barra de Pesquisa no topo da aba */}
+          <div className="relative">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" aria-hidden="true" />
+            <input
+              id="membro-search"
+              aria-label="Buscar por nome ou ministério"
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Buscar por nome ou ministério..."
+              className="w-full h-11 pl-10 pr-4 bg-white rounded-xl border border-slate-200/80 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition shadow-sm"
+            />
           </div>
 
-          <div className="flex items-center space-x-3.5">
-            <div className="relative">
-              {currentMember.t_foto_avatar_url ? (
-                <img
-                  src={currentMember.t_foto_avatar_url}
-                  alt={currentMember.nm_missionario}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-white/20 shadow-xs"
-                />
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-white/10 ring-2 ring-white/20 text-white flex items-center justify-center font-black text-sm shadow-xs">
-                  {getInitials(currentMember.nm_missionario)}
-                </div>
-              )}
-              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-slate-900 shadow-xs" />
-            </div>
+          {/* Card Clean: Meu Perfil (Você) */}
+          {!searchTerm && currentMember && (
+            <div className="bg-white rounded-2xl p-4 border border-emerald-500/30 ring-1 ring-emerald-500/10 shadow-2xs space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span>Meu Perfil • Usuário Ativo</span>
+                </span>
 
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2">
-                <h3 className="text-sm font-bold text-white truncate leading-tight">
-                  {currentMember.nm_missionario}
-                </h3>
-                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Você
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    onOpenProfile?.();
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer active:scale-95"
+                >
+                  <Pencil className="w-3 h-3 text-slate-500" />
+                  <span>Editar Perfil</span>
+                </button>
+              </div>
+
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    {currentMember.t_foto_avatar_url ? (
+                      <img
+                        src={currentMember.t_foto_avatar_url}
+                        alt={currentMember.nm_missionario}
+                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-2xs ring-1 ring-slate-200"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-[#0B1B2B] text-white flex items-center justify-center font-bold text-sm shadow-2xs ring-1 ring-slate-200">
+                        {getInitials(currentMember.nm_missionario)}
+                      </div>
+                    )}
+                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-2xs" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                      {currentMember.nm_missionario}
+                    </h3>
+                    <span className="text-xs font-semibold text-sky-800 block mt-0.5">
+                      {currentMember.t_cargo_tipo || 'Ministério CCB'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <span>
+                  {currentMember.t_telefone ? formatPhoneMask(currentMember.t_telefone) : (currentMember.t_email || 'Sem contato salvo')}
+                </span>
+                <span className="text-[11px] text-slate-400">
+                  Preenchimento automático em viagens
                 </span>
               </div>
-              <span className="text-xs font-medium text-slate-300 block mt-0.5 truncate">
-                {currentMember.t_cargo_tipo || 'Ministério CCB'}
-              </span>
-              <span className="text-[11px] text-slate-400 block mt-1 truncate">
-                {currentMember.t_telefone ? formatPhoneMask(currentMember.t_telefone) : currentMember.t_email || 'Seus relatórios e escalas são vinculados a este perfil'}
-              </span>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Cabeçalho da Equipe e Barra de Pesquisa */}
-      <div className="flex items-center justify-between pt-1">
-        <div>
-          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-            {searchTerm ? 'Resultados da Busca' : 'Equipe Ministerial e Colaboradores'}
-          </h4>
-          <p className="text-[11px] text-slate-500">
-            {searchTerm 
-              ? `${filteredMembros.length} encontrado(s)` 
-              : `${membros.length} irmão(s) para escalas e viagens`}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={handleOpenNew}
-          className="h-8 px-3 bg-[#0B1B2B] hover:bg-[#132B45] text-white rounded-xl text-xs font-bold inline-flex items-center space-x-1.5 shadow-2xs active:scale-95 transition cursor-pointer"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>Novo Irmão</span>
-        </button>
-      </div>
-
-      {/* Barra de Pesquisa */}
-      <div className="relative">
-        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" aria-hidden="true" />
-        <input
-          id="membro-search"
-          aria-label="Buscar por nome ou ministério"
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Buscar por nome ou ministério..."
-          className="w-full h-11 pl-10 pr-4 bg-white rounded-xl border border-slate-200/80 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition shadow-sm"
-        />
-      </div>
-
-      {/* Lista de Membros */}
-      {isLoading ? (
-        <div className="py-16 text-center text-slate-400 space-y-2">
-          <Loader2 className="w-6 h-6 text-slate-400 animate-spin mx-auto" />
-          <p className="text-xs font-medium">Carregando irmãos do ministério...</p>
-        </div>
-      ) : loadUnavailable && membros.length === 0 ? null : filteredMembros.length === 0 ? (
-        <div className="bg-white rounded-2xl p-8 border border-slate-200/60 text-center space-y-3 shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200/70 text-slate-400 flex items-center justify-center mx-auto shadow-inner">
-            <Users className="w-6 h-6 text-slate-400" />
-          </div>
-          <h3 className="text-sm font-bold text-slate-800">
-            {searchTerm ? 'Nenhum irmão encontrado' : 'Nenhum irmão cadastrado'}
-          </h3>
-          <p className="text-xs text-slate-500 max-w-xs mx-auto">
-            {searchTerm 
-              ? 'Tente buscar por outro termo ou limpe a busca.' 
-              : 'Cadastre os irmãos do ministério para vinculá-los aos relatórios de viagem e escalas.'}
-          </p>
-          {!searchTerm && (
-            <button
-              type="button"
-              onClick={handleOpenNew}
-              className="mt-2 h-10 px-4 bg-[#0B1B2B] hover:bg-[#132B45] text-white rounded-xl text-xs font-bold inline-flex items-center space-x-1.5 shadow-sm active:scale-95 transition"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Cadastrar Primeiro Irmão</span>
-            </button>
           )}
-        </div>
-      ) : (
-        <div className="desktop-card-list space-y-3">
-          {filteredMembros.map((m) => {
+
+          {/* Cabeçalho da Lista de Outros Membros */}
+          {!searchTerm && (
+            <div className="pt-1 px-0.5 flex items-center justify-between">
+              <div>
+                <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                  Equipe Ministerial e Colaboradores
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  {outrosMembros.length === 0 
+                    ? 'Nenhum outro irmão cadastrado' 
+                    : `${outrosMembros.length} outro(s) irmão(s) para escalas e viagens`}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {searchTerm && (
+            <div className="pt-1 px-0.5">
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                Resultados da Busca
+              </h4>
+              <p className="text-[11px] text-slate-500">
+                {filteredMembros.length} irmão(s) encontrado(s)
+              </p>
+            </div>
+          )}
+
+          {/* Lista de Membros */}
+          {isLoading ? (
+            <div className="py-16 text-center text-slate-400 space-y-2">
+              <Loader2 className="w-6 h-6 text-slate-400 animate-spin mx-auto" />
+              <p className="text-xs font-medium">Carregando irmãos do ministério...</p>
+            </div>
+          ) : loadUnavailable && membros.length === 0 ? null : (searchTerm ? filteredMembros : outrosMembros).length === 0 ? (
+            <div className="bg-white rounded-2xl p-6 border border-slate-200/60 text-center space-y-2.5 shadow-2xs">
+              <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-200/70 text-slate-400 flex items-center justify-center mx-auto shadow-inner">
+                <Users className="w-5 h-5 text-slate-400" />
+              </div>
+              <h3 className="text-xs font-bold text-slate-800">
+                {searchTerm ? 'Nenhum irmão encontrado' : 'Nenhum outro membro cadastrado na equipe'}
+              </h3>
+              <p className="text-[11px] text-slate-500 max-w-xs mx-auto">
+                {searchTerm 
+                  ? 'Tente buscar por outro termo ou limpe a busca.' 
+                  : 'Para adicionar outros irmãos do ministério às suas escalas, use o botão + no topo.'}
+              </p>
+            </div>
+          ) : (
+            <div className="desktop-card-list space-y-3">
+              {(searchTerm ? filteredMembros : outrosMembros).map((m) => {
             const rawPhone = (m.t_telefone || '').replace(/\D/g, '');
             const hasPhone = rawPhone.length >= 10;
             const cleanPhone = rawPhone.startsWith('55') ? rawPhone : `55${rawPhone}`;
