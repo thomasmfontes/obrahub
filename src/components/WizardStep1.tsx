@@ -10,7 +10,9 @@ import {
   FileText, 
   ChevronRight, 
   Loader2,
-  Wallet
+  Wallet,
+  Plus,
+  Minus
 } from 'lucide-react';
 import type { Missionario, PoloMissionario } from '../types';
 import { triggerHaptic, formatCurrencyBRL, parseCurrencyInput } from '../utils/formatters';
@@ -233,7 +235,7 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
         </div>
 
         {/* Bloco 3: Integrantes da Comitiva */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.03)] flex items-center justify-between">
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.03)] space-y-4">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
               <Users className="w-4 h-4 stroke-[2]" />
@@ -243,38 +245,50 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
                 Integrantes na Comitiva
               </h3>
               <p className="text-[11px] text-slate-500 font-medium">
-                {comitivaCount === 1 ? '1 irmão viajando' : `${comitivaCount} irmãos na comitiva`}
+                Tamanho da equipe para reservas e diárias
               </p>
             </div>
           </div>
 
-          {/* Stepper Ergonômico */}
-          <div className="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl">
-            <button 
-              type="button"
-              onClick={() => {
-                triggerHaptic('light');
-                setComitivaCount(Math.max(1, comitivaCount - 1));
-              }}
-              className="w-8 h-8 bg-white rounded-lg shadow-2xs text-slate-800 font-bold flex items-center justify-center transition active:scale-90 text-sm hover:bg-slate-50"
-              aria-label="Diminuir"
-            >
-              -
-            </button>
-            <span className="w-6 text-center text-xs font-bold text-slate-900">
-              {comitivaCount}
-            </span>
-            <button 
-              type="button"
-              onClick={() => {
-                triggerHaptic('light');
-                setComitivaCount(comitivaCount + 1);
-              }}
-              className="w-8 h-8 bg-white rounded-lg shadow-2xs text-slate-800 font-bold flex items-center justify-center transition active:scale-90 text-sm hover:bg-slate-50"
-              aria-label="Aumentar"
-            >
-              +
-            </button>
+          <div className="flex items-center justify-between p-3.5 bg-slate-50/80 border border-slate-200/80 rounded-xl">
+            <div className="flex flex-col">
+              <span className="text-xs font-semibold text-slate-800">
+                {comitivaCount === 1 ? '1 irmão viajando' : `${comitivaCount} irmãos na comitiva`}
+              </span>
+              <span className="text-[11px] text-slate-500">
+                {comitivaCount === 1 ? 'Missão individual' : 'Comitiva ministerial'}
+              </span>
+            </div>
+
+            {/* Stepper Ergonômico com Botões Mais Confortáveis */}
+            <div className="flex items-center space-x-2.5 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
+              <button 
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  setComitivaCount(Math.max(1, comitivaCount - 1));
+                }}
+                disabled={comitivaCount <= 1}
+                className="w-9 h-9 rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 disabled:opacity-35 disabled:cursor-not-allowed flex items-center justify-center transition active:scale-95 cursor-pointer outline-none focus:outline-none"
+                aria-label="Diminuir integrantes"
+              >
+                <Minus className="w-4 h-4 stroke-[2.5]" />
+              </button>
+              <span className="w-7 text-center text-sm font-bold text-slate-900 tabular-nums">
+                {comitivaCount}
+              </span>
+              <button 
+                type="button"
+                onClick={() => {
+                  triggerHaptic('light');
+                  setComitivaCount(comitivaCount + 1);
+                }}
+                className="w-9 h-9 rounded-lg bg-slate-900 text-white hover:bg-slate-800 flex items-center justify-center transition active:scale-95 shadow-2xs cursor-pointer outline-none focus:outline-none"
+                aria-label="Aumentar integrantes"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+              </button>
+            </div>
           </div>
         </div>
 
