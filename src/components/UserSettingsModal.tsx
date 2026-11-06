@@ -455,28 +455,6 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
         </button>
       )}
 
-      {/* 4. Informações da Conta */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-3.5 flex items-center justify-between shadow-2xs">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-[#0B1B2B] text-white flex items-center justify-center text-xs font-bold shadow-xs">
-            {missionario?.nm_missionario ? missionario.nm_missionario.slice(0, 2).toUpperCase() : 'CC'}
-          </div>
-          <div>
-            <span className="text-xs font-bold text-slate-900 block leading-tight">
-              {missionario?.nm_missionario || 'Irmão do Ministério'}
-            </span>
-            <span className="text-[11px] text-slate-500 font-medium block mt-0.5">
-              {missionario?.t_cargo_tipo || 'Ministério de Viagem'} • {missionario?.nm_credencial_pastoral || 'Atendimento'}
-            </span>
-          </div>
-        </div>
-
-        <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-2 py-1 rounded-md">
-          v2.4
-        </span>
-      </div>
-
-
     </BottomSheet>
   );
 };
