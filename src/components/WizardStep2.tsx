@@ -502,9 +502,12 @@ export const WizardStep2: React.FC<WizardStep2Props> = ({
             const day = event.target.value;
             if (datePills.includes(day)) (onSelectDay || setSelectedDay)(day);
           }} className="w-full h-11 px-3 rounded-xl border border-slate-200 text-sm" />
-          {dayIndexState === 'loading' && <p role="status" className="text-xs text-slate-600">Consultando dias com diário salvo…</p>}
-          {dayIndexState === 'error' && <div className="text-xs text-amber-900"><p>Não foi possível consultar quais dias têm diário salvo.</p><button type="button" onClick={onRetryDayIndex} className="min-h-11 underline">Tentar novamente</button></div>}
-          <p className="text-xs text-slate-600">● Diário salvo · ○ Sem diário salvo{dayIndexState !== 'ready' ? ' · ? Situação indisponível' : ''}</p>
+          {dayIndexState === 'error' && (
+            <div className="text-xs text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200/70 flex items-center justify-between">
+              <p>Não foi possível consultar dias com diário salvo.</p>
+              <button type="button" onClick={onRetryDayIndex} className="underline font-semibold ml-2">Tentar novamente</button>
+            </div>
+          )}
           <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
             {visibleDays.map((day, idx) => {
               const isSelected = selectedDay === day;
@@ -514,7 +517,7 @@ export const WizardStep2: React.FC<WizardStep2Props> = ({
                 <button 
                   key={day}
                   aria-pressed={isSelected}
-                  aria-label={`${formatLongDate(day)} — ${saved ? 'Diário salvo' : dayIndexState === 'ready' ? 'Sem diário salvo' : 'Situação indisponível'}`}
+                  aria-label={`${formatLongDate(day)}${saved ? ' — Diário salvo' : ''}`}
                   type="button"
                   disabled={isSaving || isListening}
                   onClick={() => {
@@ -546,7 +549,13 @@ export const WizardStep2: React.FC<WizardStep2Props> = ({
                   }`}>
                     {details.mesAbr}
                   </span>
-                  <span aria-hidden="true" className="text-xs">{saved ? '●' : dayIndexState === 'ready' ? '○' : '?'}</span>
+                  <div className="h-1.5 flex items-center justify-center mt-0.5" aria-hidden="true">
+                    {saved ? (
+                      <span className={`w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-emerald-400' : 'bg-emerald-500'}`} />
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full opacity-0" />
+                    )}
+                  </div>
                 </button>
               );
             })}
