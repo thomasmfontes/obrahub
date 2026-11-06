@@ -4,7 +4,6 @@ import {
   Camera, 
   X, 
   ChevronRight, 
-  ArrowRight,
   Loader2, 
   BookOpen,
   Calendar,
@@ -97,18 +96,6 @@ export const WizardStep2: React.FC<WizardStep2Props> = ({
   onEditExpense,
   onDeleteExpense
 }) => {
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  const handleNext = () => {
-    if (isNavigating || isSaving || isListening) return;
-    triggerHaptic('medium');
-    setIsNavigating(true);
-    setTimeout(() => {
-      onNext();
-      setTimeout(() => setIsNavigating(false), 500);
-    }, 240);
-  };
-
   const getDayDetails = (dayStr: string, idx: number) => {
     try {
       const parts = dayStr.split('-');
@@ -1042,37 +1029,12 @@ export const WizardStep2: React.FC<WizardStep2Props> = ({
       <div className="wizard-bottom-bar">
         <button 
           type="button"
-          onClick={handleNext}
-          disabled={isSaving || isListening || isNavigating}
-          className="relative overflow-hidden w-full h-12 bg-[#0B1B2B] hover:bg-[#132B45] text-white font-bold rounded-2xl text-xs flex items-center justify-center shadow-[0_4px_16px_rgba(11,27,43,0.25)] transition active:scale-[0.985] disabled:opacity-75 cursor-pointer group"
+          onClick={onNext}
+          disabled={isSaving || isListening}
+          className="w-full h-12 bg-[#0B1B2B] hover:bg-[#132B45] text-white font-bold rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-[0_4px_16px_rgba(11,27,43,0.25)] transition active:scale-[0.985] disabled:opacity-50 cursor-pointer"
         >
-          {isSaving ? (
-            <div className="flex items-center justify-center space-x-1.5">
-              <Loader2 className="w-4 h-4 animate-spin mr-1" />
-              <span>Salvando...</span>
-            </div>
-          ) : (
-            <>
-              {/* Conteúdo padrão */}
-              <div 
-                className={`flex items-center justify-center space-x-1.5 transition-all duration-200 ease-out ${
-                  isNavigating 
-                    ? 'opacity-0 scale-95 -translate-x-3 pointer-events-none' 
-                    : 'opacity-100 scale-100 translate-x-0'
-                }`}
-              >
-                <span>Continuar para Financeiro</span>
-                <ChevronRight className="w-4 h-4 ml-0.5 transition-transform duration-200 group-hover:translate-x-1" />
-              </div>
-
-              {/* Seta animada suave no centro ao clicar */}
-              {isNavigating && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <ArrowRight className="w-5 h-5 text-white stroke-[2.5] animate-arrow-slide-center" />
-                </div>
-              )}
-            </>
-          )}
+          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <span>Continuar para Financeiro</span>}
+          <ChevronRight className="w-4 h-4 ml-0.5" />
         </button>
       </div>
 
