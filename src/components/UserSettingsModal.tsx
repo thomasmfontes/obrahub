@@ -340,22 +340,37 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
                 </div>
               </label>
 
-              <label className="flex items-start space-x-3 cursor-pointer p-2 rounded-xl hover:bg-slate-50 transition">
-                <input
-                  type="checkbox"
-                  checked={somAtivo}
-                  onChange={(e) => setSomAtivo(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 text-[#0B1B2B] rounded border-slate-300 focus:ring-0"
-                />
-                <div>
-                  <span className="font-bold text-slate-800 block">
-                    Alerta sonoro e vibração
-                  </span>
-                  <span className="text-[11px] text-slate-500 block leading-tight mt-0.5">
-                    Emite som/vibração discreto no aparelho ao disparar o aviso.
-                  </span>
-                </div>
-              </label>
+              <div className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 transition">
+                <label className="flex items-start space-x-3 cursor-pointer flex-1 min-w-0 mr-2">
+                  <input
+                    type="checkbox"
+                    checked={somAtivo}
+                    onChange={(e) => setSomAtivo(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 text-[#0B1B2B] rounded border-slate-300 focus:ring-0 shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <span className="font-bold text-slate-800 block text-xs">
+                      Alerta sonoro e vibração
+                    </span>
+                    <span className="text-[11px] text-slate-500 block leading-tight mt-0.5">
+                      Toque oficial ObraHub ao disparar o aviso.
+                    </span>
+                  </div>
+                </label>
+
+                {somAtivo && (
+                  <button
+                    type="button"
+                    onClick={handlePlaySound}
+                    disabled={isPlayingSound}
+                    title="Ouvir som oficial"
+                    className="h-7 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold flex items-center space-x-1.5 transition active:scale-95 shrink-0 cursor-pointer"
+                  >
+                    <Volume2 className={`w-3.5 h-3.5 ${isPlayingSound ? 'text-emerald-600 animate-pulse' : 'text-slate-600'}`} />
+                    <span>{isPlayingSound ? 'Tocando...' : 'Ouvir'}</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -419,35 +434,23 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
             )}
           </button>
         ) : (
-          <div className="grid grid-cols-2 gap-2 pt-0.5">
-            <button
-              type="button"
-              onClick={handlePlaySound}
-              disabled={isPlayingSound}
-              className="h-9 px-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-xl text-xs font-semibold text-slate-700 flex items-center justify-center space-x-1.5 transition active:scale-[0.985] shadow-2xs cursor-pointer truncate"
-            >
-              <Play className={`w-3.5 h-3.5 ${isPlayingSound ? 'text-emerald-600 animate-pulse' : 'text-[#0B1B2B]'} fill-current shrink-0`} />
-              <span className="truncate">{isPlayingSound ? 'Tocando...' : 'Ouvir Toque'}</span>
-            </button>
-
-            <button
-              type="button"
-              disabled={testCountdown !== null}
-              onClick={handleTestCountdown}
-              className="h-9 px-2.5 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80 text-xs font-semibold flex items-center justify-center space-x-1.5 transition active:scale-[0.985] shadow-2xs cursor-pointer disabled:opacity-80 truncate"
-            >
-              {testCountdown !== null ? (
-                <span className="text-amber-700 font-bold animate-pulse text-[11px] truncate">
-                  Em {testCountdown}s...
-                </span>
-              ) : (
-                <>
-                  <Bell className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                  <span className="truncate">Testar Notificação</span>
-                </>
-              )}
-            </button>
-          </div>
+          <button
+            type="button"
+            disabled={testCountdown !== null}
+            onClick={handleTestCountdown}
+            className="w-full h-9 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200/80 text-xs font-semibold flex items-center justify-center space-x-1.5 transition active:scale-[0.985] shadow-2xs cursor-pointer disabled:opacity-80"
+          >
+            {testCountdown !== null ? (
+              <span className="text-amber-700 font-bold animate-pulse text-xs">
+                Enviando notificação em {testCountdown}s... (Pode minimizar)
+              </span>
+            ) : (
+              <>
+                <Bell className="w-3.5 h-3.5 text-slate-500" />
+                <span>Testar Notificação no Celular</span>
+              </>
+            )}
+          </button>
         )}
       </div>
 
