@@ -292,18 +292,11 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
 
                 {/* Detalhes do contato */}
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center space-x-1.5 flex-wrap gap-y-0.5">
-                    <h4 className="text-sm font-bold text-slate-900 truncate leading-tight">
-                      {d.nm_destinatario}
-                    </h4>
-                    {d.t_cargo_departamento && (
-                      <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md truncate max-w-[130px]">
-                        {d.t_cargo_departamento}
-                      </span>
-                    )}
-                  </div>
+                  <h4 className="text-sm font-bold text-slate-900 truncate leading-tight">
+                    {d.nm_destinatario}
+                  </h4>
                   <div className="flex items-center space-x-1.5 text-xs text-slate-500 truncate mt-0.5 font-normal">
-                    <Mail className="w-3 h-3 text-slate-400 shrink-0" />
+                    <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     <span className="truncate">{d.t_email}</span>
                   </div>
                 </div>
