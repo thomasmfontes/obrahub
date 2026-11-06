@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import ts from 'typescript';
+import vm from 'node:vm';
+const compiled = ts.transpileModule(fs.readFileSync('src/utils/reportReview.ts', 'utf8'), { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText;
+const { reportWarnings } = await import(`data:text/javascript;base64,${Buffer.from(compiled).toString('base64')}`);
+const days = ['2026-09-01', '2026-09-02', '2026-09-03'];
+const expenses = [{ id_despesa: 'E1', t_comprovante_storage_urls: [] }, { id_despesa: 'E2', t_comprovante_storage_urls: ['receipt'] }];
+const result = reportWarnings(days, [{ t_data_registro: '2026-09-01', t_resumo_atividades: 'Atendimento' }, { t_data_registro: '2026-09-02', t_resumo_atividades: '  ' }], expenses);
+assert.deepEqual(result.missingDays, ['2026-09-02', '2026-09-03']);
+assert.equal(result.missingReceipts[0].id_despesa, 'E1');
+assert.equal(result.missingReceipts.length, 1);
+assert.equal(reportWarnings([], [], []).missingDays.length, 0);
+const source = fs.readFileSync('src/services/neon.ts', 'utf8').replace(/const dbUrl =[\s\S]*?;\r?\n/, 'const dbUrl = "validation";\n');
+const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+let fail = false;
+const exports = {};
+vm.runInNewContext(code, { exports, require: name => {
+  if (name === '@neondatabase/serverless') return { neonConfig: {}, neon: () => ({ query: async (_, params) => { assert.equal(params[0], 'QA'); if (fail) throw new Error('Query failed'); return []; } }) };
+  if (name === '../utils/formatters') return { normalizeDateToInput: value => value };
+  if (name === '../utils/reportSharing') return {};
+}, console: { error() {} } });
+assert.equal((await exports.getReportReview('QA')).expenses.length, 0);
+fail = true;
+await assert.rejects(exports.getReportReview('QA'), /Query failed/);
+console.log('Passed: missing/blank reports, receipt availability and strict review reads. No database writes.');

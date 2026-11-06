@@ -1,0 +1,17 @@
+{
+  "short_name": "ObraHub",
+  "name": "ObraHub - Gestão e Missões",
+  "description": "Sistema de gestão eclesiástica e prestação de contas de viagens missionárias",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0B1B2B",
+  "theme_color": "#0B1B2B",
+  "display": "standalone",
+  "orientation": "portrait"
+}

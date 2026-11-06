@@ -1,0 +1,53 @@
+{
+  "name": "obrahub",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "node scripts/run-all-tests.mjs",
+    "verify": "node scripts/run-all-tests.mjs",
+    "test:ux01": "node scripts/test-load-resource.mjs",
+    "test:ux02": "node scripts/test-save-queue.mjs",
+    "test:ux03": "node scripts/test-report-sharing.mjs",
+    "test:ux04": "node scripts/test-trip-validation.mjs",
+    "test:ux05": "node scripts/test-agenda-report.mjs",
+    "test:ux06": "node scripts/test-trip-days.mjs",
+    "test:ux07": "node scripts/test-report-position.mjs",
+    "test:ux08": "node scripts/test-expense-edit.mjs",
+    "test:ux09": "node scripts/test-delete-items.mjs",
+    "test:ux10": "node scripts/test-report-review.mjs",
+    "test:db": "node scripts/test-database-backend-sprint1.mjs && node scripts/test-database-backend-sprint2.mjs",
+    "test:db2": "node scripts/test-database-backend-sprint2.mjs",
+    "migrate:photos": "node scripts/migrate_base64_to_storage.mjs"
+  },
+  "dependencies": {
+    "@google/genai": "^3.0.0",
+    "@neon/config": "^1.8.2",
+    "@neon/env": "^1.4.7",
+    "@neondatabase/serverless": "^1.1.0",
+    "clsx": "^2.1.1",
+    "firebase": "^12.19.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.48.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwind-merge": "^3.7.0",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.0",
+    "vite": "^8.3.1"
+  }
+}

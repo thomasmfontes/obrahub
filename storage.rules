@@ -1,0 +1,11 @@
+rules_version = '2';
+
+// Permissões de armazenamento para o ObraHub
+// Permite leitura e upload de fotos de missões e comprovantes fiscais
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}

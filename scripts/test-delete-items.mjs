@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import ts from 'typescript';
+import vm from 'node:vm';
+let rows = [{ id_despesa: 'E1', dc_valor_despesa: 125 }], calls = [];
+const source = fs.readFileSync('src/services/neon.ts', 'utf8').replace(/const dbUrl =[\s\S]*?;\r?\n/, 'const dbUrl = "validation";\n');
+const code = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+const exports = {};
+vm.runInNewContext(code, { exports, console: { error() {} }, require: name => {
+  if (name === '@neondatabase/serverless') return { neonConfig: {}, neon: () => ({ query: async (sql, params) => { calls.push({ sql, params }); return rows; } }) };
+  if (name === '../utils/reportSharing') return {};
+  if (name === '../utils/formatters') return { normalizeDateToInput: value => value || '' };
+  throw new Error(name);
+} });
+rows = [];
+await assert.rejects(exports.deleteEvidenciaFoto('P1'), /não confirmou/);
+await assert.rejects(exports.deleteDespesaRubrica('E1'), /não confirmou/);
+rows = [{id_foto:'OTHER',id_despesa:'OTHER'}];
+await assert.rejects(exports.deleteEvidenciaFoto('P1'), /não confirmou/);
+await assert.rejects(exports.deleteDespesaRubrica('E1'), /não confirmou/);
+rows = [{id_foto:'P1',id_despesa:'E1'}];
+await exports.deleteEvidenciaFoto('P1');
+await exports.deleteDespesaRubrica('E1');
+assert.ok(calls.every(call => call.sql.includes('RETURNING')));
+console.log('Passed: photo and expense deletion require matching server confirmation. No database writes.');
