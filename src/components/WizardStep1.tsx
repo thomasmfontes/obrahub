@@ -87,6 +87,7 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
       formRef.current?.querySelector<HTMLElement>(`#trip-${first}`)?.focus();
       return;
     }
+    triggerHaptic('light');
     onNext();
   };
   const fieldError = (field: keyof TripFields) => errors[field]
@@ -434,10 +435,19 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
           type="button"
           onClick={handleNext}
           disabled={isSaving}
-          className="w-full h-12 bg-[#0B1B2B] hover:bg-[#132B45] text-white font-bold rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-[0_4px_16px_rgba(11,27,43,0.25)] transition active:scale-[0.985] disabled:opacity-50 cursor-pointer"
+          className="group w-full h-12 bg-[#0B1B2B] hover:bg-[#132B45] text-white font-semibold rounded-2xl text-sm tracking-tight flex items-center justify-center shadow-[0_4px_16px_rgba(11,27,43,0.22)] transition-all duration-150 ease-out active:scale-[0.98] active:brightness-110 disabled:opacity-50 cursor-pointer"
         >
-          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <span>Continuar para Diário</span>}
-          <ChevronRight className="w-4 h-4 ml-0.5" />
+          {isSaving ? (
+            <div className="flex items-center space-x-2">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Salvando...</span>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-1">
+              <span>Continuar para Diário</span>
+              <ChevronRight className="w-4 h-4 stroke-[2.5] transition-transform duration-200 ease-out group-hover:translate-x-1 group-active:translate-x-1.5" />
+            </div>
+          )}
         </button>
       </div>
     </>
