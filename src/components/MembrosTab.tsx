@@ -11,7 +11,8 @@ import {
   Loader2,
   Bell,
   ShieldCheck,
-  Check
+  Check,
+  ChevronRight
 } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import type { Missionario, DestinatarioNotificacao } from '../types';
@@ -354,63 +355,36 @@ export const MembrosTab: React.FC<MembrosTabProps> = ({
             />
           </div>
 
-          {/* Card Clean: Meu Perfil (Você) */}
+          {/* Linha Minimalista: Meu Perfil (Você) */}
           {!searchTerm && currentMember && (
-            <div className="bg-white rounded-2xl p-4 border border-emerald-500/30 ring-1 ring-emerald-500/10 shadow-2xs space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200/80">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  <span>Meu Perfil • Usuário Ativo</span>
-                </span>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    triggerHaptic('light');
-                    onOpenProfile?.();
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition flex items-center space-x-1 cursor-pointer active:scale-95"
-                >
-                  <Pencil className="w-3 h-3 text-slate-500" />
-                  <span>Editar Perfil</span>
-                </button>
-              </div>
-
-              <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="relative">
-                    {currentMember.t_foto_avatar_url ? (
-                      <img
-                        src={currentMember.t_foto_avatar_url}
-                        alt={currentMember.nm_missionario}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-2xs ring-1 ring-slate-200"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-[#0B1B2B] text-white flex items-center justify-center font-bold text-sm shadow-2xs ring-1 ring-slate-200">
-                        {getInitials(currentMember.nm_missionario)}
-                      </div>
-                    )}
-                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-2xs" />
-                  </div>
-
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-900 leading-tight">
+            <div
+              onClick={() => {
+                triggerHaptic('light');
+                onOpenProfile?.();
+              }}
+              className="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-2xs flex items-center justify-between cursor-pointer hover:border-slate-300 transition active:scale-[0.99]"
+            >
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-10 h-10 rounded-full bg-[#0B1B2B] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                  {getInitials(currentMember.nm_missionario)}
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="text-sm font-bold text-slate-900 truncate">
                       {currentMember.nm_missionario}
-                    </h3>
-                    <span className="text-xs font-semibold text-sky-800 block mt-0.5">
-                      {currentMember.t_cargo_tipo || 'Ministério CCB'}
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-600">
+                      Você
                     </span>
                   </div>
+                  <span className="text-xs text-slate-500 truncate block mt-0.5">
+                    {currentMember.t_cargo_tipo}{currentMember.t_telefone ? ` • ${formatPhoneMask(currentMember.t_telefone)}` : ''}
+                  </span>
                 </div>
               </div>
-
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                <span>
-                  {currentMember.t_telefone ? formatPhoneMask(currentMember.t_telefone) : (currentMember.t_email || 'Sem contato salvo')}
-                </span>
-                <span className="text-[11px] text-slate-400">
-                  Preenchimento automático em viagens
-                </span>
+              <div className="flex items-center space-x-1 text-slate-400 pl-2 shrink-0">
+                <span className="text-xs font-medium text-slate-400">Editar</span>
+                <ChevronRight className="w-4 h-4" />
               </div>
             </div>
           )}
