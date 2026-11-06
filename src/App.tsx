@@ -57,7 +57,8 @@ import {
   toggleEnvioAutomaticoDestinatario,
   getConfiguracaoLembrete,
   saveConfiguracaoLembrete,
-  DEFAULT_CONFIG_LEMBRETE
+  DEFAULT_CONFIG_LEMBRETE,
+  saveMissionario
 } from './services/neon';
 import { uploadMissionPhoto } from './services/firebase';
 import { requestPushPermission } from './services/fcm';
@@ -73,6 +74,7 @@ import { MembrosTab } from './components/MembrosTab';
 import { ReportDetailModal } from './components/ReportDetailModal';
 import { NotificationCenterModal } from './components/NotificationCenterModal';
 import { UserSettingsModal } from './components/UserSettingsModal';
+import { UserProfileModal } from './components/UserProfileModal';
 import { WizardHeader } from './components/WizardHeader';
 import { WizardStep1 } from './components/WizardStep1';
 import { WizardStep2 } from './components/WizardStep2';
@@ -117,6 +119,77 @@ export default function App() {
   const [loadStates, setLoadStates] = useState<Record<ResourceKey, LoadState>>({ indicadores: 'loading', ativo: 'loading', relatorios: 'loading', membros: 'loading', polos: 'loading', destinatarios: 'loading' });
   const knownResources = useRef(new Set<ResourceKey>());
   const loadingDashboardRef = useRef(false);
+
+  // Perfil do Usuário Ativo
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [activeMemberId, setActiveMemberId] = useState<string>(() => {
+    try {
+      return localStorage.getItem('obrahub_active_member_id') || '';
+    } catch {
+      return '';
+    }
+  });
+
+  const currentMember = useMemo(() => {
+    if (!membros || membros.length === 0) return null;
+    if (activeMemberId) {
+      const found = membros.find(m => m.id_missionario === activeMemberId);
+      if (found) return found;
+    }
+    return membros[0];
+  }, [membros, activeMemberId]);
+
+  const handleSelectActiveMember = (id: string) => {
+    setActiveMemberId(id);
+    try {
+      localStorage.setItem('obrahub_active_member_id', id);
+    } catch {}
+    const m = membros.find(item => item.id_missionario === id);
+    if (m) {
+      setMissionario(m.nm_missionario);
+    }
+  };
+
+  const handleSaveProfile = async (data: {
+    id_missionario: string;
+    nm_missionario: string;
+    t_cargo_tipo: string;
+    t_telefone?: string;
+    t_email?: string;
+  }) => {
+    const existing = membros.find(m => m.id_missionario === data.id_missionario);
+    await saveMissionario({
+      id_missionario: data.id_missionario,
+      nm_missionario: data.nm_missionario,
+      nm_credencial_pastoral: existing?.nm_credencial_pastoral || 'Ministério / Atendimento',
+      t_cargo_tipo: data.t_cargo_tipo,
+      t_telefone: data.t_telefone,
+      t_email: data.t_email,
+      t_ativo: true
+    });
+    setMissionario(data.nm_missionario);
+    await loadDashboardData();
+  };
+
+  const handleAddNewMemberFromProfile = async (data: {
+    nm_missionario: string;
+    t_cargo_tipo: string;
+    t_telefone?: string;
+    t_email?: string;
+  }) => {
+    const created = await saveMissionario({
+      nm_missionario: data.nm_missionario,
+      nm_credencial_pastoral: 'Ministério / Atendimento',
+      t_cargo_tipo: data.t_cargo_tipo,
+      t_telefone: data.t_telefone,
+      t_email: data.t_email,
+      t_ativo: true
+    });
+    await loadDashboardData();
+    if (created?.id_missionario) {
+      handleSelectActiveMember(created.id_missionario);
+    }
+  };
 
   // Notificações e Destinatários de E-mail
   const [destinatarios, setDestinatarios] = useState<DestinatarioNotificacao[]>([]);
@@ -596,8 +669,13 @@ export default function App() {
     const novoProtocolo = await getProximoProtocolo();
     const unicoMembro = membros.length === 1 ? membros[0] : null;
     const initial = event ? agendaReportFields(event) : {
-      missionario: unicoMembro?.nm_missionario || '', poloDestino: '', dataSaida: '', dataRetorno: '',
-      comitivaCount: 1, objetivoPrimario: '', source: null
+      missionario: currentMember?.nm_missionario || unicoMembro?.nm_missionario || '', 
+      poloDestino: '', 
+      dataSaida: '', 
+      dataRetorno: '',
+      comitivaCount: 1, 
+      objetivoPrimario: '', 
+      source: null
     };
     setAgendaSource(initial.source);
     setIdRelatorio('');
@@ -1186,7 +1264,7 @@ export default function App() {
                 <DashboardTab
                   relatorios={allRelatorios}
                   relatorioAtivo={relatorioAtivo}
-                  missionarioName={missionario || (membros.length > 0 ? membros[0].nm_missionario : '')}
+                  missionarioName={currentMember ? currentMember.nm_missionario : (missionario || '')}
                   onStartNewReport={handleStartNewReport}
                   onResumeReport={handleResumeReport}
                   onNavigateTab={(tab) => {
@@ -1196,6 +1274,10 @@ export default function App() {
                   onOpenNotifications={() => {
                     triggerHaptic('light');
                     setIsSettingsModalOpen(true);
+                  }}
+                  onOpenProfile={() => {
+                    triggerHaptic('light');
+                    setIsProfileModalOpen(true);
                   }}
                   notificationCount={0}
                 />
@@ -1233,6 +1315,12 @@ export default function App() {
                 onRefresh={loadDashboardData}
                 onShowNotification={showNotification}
                 destinatarios={destinatarios}
+                currentMemberId={currentMember?.id_missionario}
+                onSelectActiveMember={handleSelectActiveMember}
+                onOpenProfile={() => {
+                  triggerHaptic('light');
+                  setIsProfileModalOpen(true);
+                }}
                 onSaveDestinatario={handleSaveDestinatario}
                 onDeleteDestinatario={handleDeleteDestinatario}
                 onToggleAutomatico={handleToggleAutomatico}
@@ -1512,6 +1600,19 @@ export default function App() {
           onSaveDestinatario={handleSaveDestinatario}
           onDeleteDestinatario={handleDeleteDestinatario}
           onToggleAutomatico={handleToggleAutomatico}
+          onShowToast={showNotification}
+        />
+
+        {/* Modal de Meu Perfil & Troca de Usuário do Aparelho */}
+        <UserProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          currentMember={currentMember}
+          membros={membros}
+          onSelectActiveMember={handleSelectActiveMember}
+          onSaveProfile={handleSaveProfile}
+          onAddNewMember={handleAddNewMemberFromProfile}
+          onOpenReminderSettings={() => setIsSettingsModalOpen(true)}
           onShowToast={showNotification}
         />
 

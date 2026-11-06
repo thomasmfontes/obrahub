@@ -28,6 +28,9 @@ interface MembrosTabProps {
   onRefresh: () => Promise<void>;
   onShowNotification: (msg: string, type?: 'success' | 'error' | 'warning' | 'info') => void;
   destinatarios?: DestinatarioNotificacao[];
+  currentMemberId?: string;
+  onSelectActiveMember?: (id: string) => void;
+  onOpenProfile?: () => void;
   onSaveDestinatario?: (data: {
     id_destinatario?: string;
     nm_destinatario: string;
@@ -57,6 +60,9 @@ export const MembrosTab: React.FC<MembrosTabProps> = ({
   onRefresh,
   onShowNotification,
   destinatarios = [],
+  currentMemberId,
+  onSelectActiveMember,
+  onOpenProfile,
   onSaveDestinatario,
   onDeleteDestinatario,
   onToggleAutomatico
@@ -184,6 +190,9 @@ export const MembrosTab: React.FC<MembrosTabProps> = ({
     const matchEmail = (m.t_email || '').toLowerCase().includes(term);
     return matchName || matchCargo || matchCred || matchTel || matchEmail;
   });
+
+  const currentMember = membros.find(m => m.id_missionario === currentMemberId) || (membros.length > 0 ? membros[0] : null);
+  const outrosMembros = filteredMembros.filter(m => m.id_missionario !== currentMember?.id_missionario);
 
   const getInitials = (name: string) => {
     if (!name) return 'IR';
@@ -331,6 +340,85 @@ export const MembrosTab: React.FC<MembrosTabProps> = ({
       {subTab === 'irmaos' && (
         <div className="space-y-4 animate-in fade-in duration-150">
 
+      {/* Card de Destaque: Meu Perfil (Você) */}
+      {!searchTerm && currentMember && (
+        <div className="bg-gradient-to-br from-slate-900 via-[#132B45] to-slate-900 text-white rounded-2xl p-4 shadow-sm space-y-3 border border-slate-800">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center space-x-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Meu Perfil • Usuário Ativo neste Aparelho</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                triggerHaptic('light');
+                onOpenProfile?.();
+              }}
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold transition flex items-center space-x-1 cursor-pointer active:scale-95"
+            >
+              <Pencil className="w-3 h-3" />
+              <span>Editar Meu Perfil</span>
+            </button>
+          </div>
+
+          <div className="flex items-center space-x-3.5">
+            <div className="relative">
+              {currentMember.t_foto_avatar_url ? (
+                <img
+                  src={currentMember.t_foto_avatar_url}
+                  alt={currentMember.nm_missionario}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white/20 shadow-xs"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-white/10 ring-2 ring-white/20 text-white flex items-center justify-center font-black text-sm shadow-xs">
+                  {getInitials(currentMember.nm_missionario)}
+                </div>
+              )}
+              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-slate-900 shadow-xs" />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center space-x-2">
+                <h3 className="text-sm font-bold text-white truncate leading-tight">
+                  {currentMember.nm_missionario}
+                </h3>
+                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Você
+                </span>
+              </div>
+              <span className="text-xs font-medium text-slate-300 block mt-0.5 truncate">
+                {currentMember.t_cargo_tipo || 'Ministério CCB'}
+              </span>
+              <span className="text-[11px] text-slate-400 block mt-1 truncate">
+                {currentMember.t_telefone ? formatPhoneMask(currentMember.t_telefone) : currentMember.t_email || 'Seus relatórios e escalas são vinculados a este perfil'}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cabeçalho da Equipe e Barra de Pesquisa */}
+      <div className="flex items-center justify-between pt-1">
+        <div>
+          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+            {searchTerm ? 'Resultados da Busca' : 'Equipe Ministerial e Colaboradores'}
+          </h4>
+          <p className="text-[11px] text-slate-500">
+            {searchTerm 
+              ? `${filteredMembros.length} encontrado(s)` 
+              : `${membros.length} irmão(s) para escalas e viagens`}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={handleOpenNew}
+          className="h-8 px-3 bg-[#0B1B2B] hover:bg-[#132B45] text-white rounded-xl text-xs font-bold inline-flex items-center space-x-1.5 shadow-2xs active:scale-95 transition cursor-pointer"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          <span>Novo Irmão</span>
+        </button>
+      </div>
+
       {/* Barra de Pesquisa */}
       <div className="relative">
         <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" aria-hidden="true" />
@@ -406,13 +494,19 @@ export const MembrosTab: React.FC<MembrosTabProps> = ({
                     </div>
 
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 leading-tight">
-                        {m.nm_missionario}
-                      </h3>
+                      <div className="flex items-center space-x-1.5">
+                        <h3 className="text-sm font-bold text-slate-900 leading-tight">
+                          {m.nm_missionario}
+                        </h3>
+                        {m.id_missionario === currentMember?.id_missionario && (
+                          <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 shrink-0">
+                            Você
+                          </span>
+                        )}
+                      </div>
                       <span className="text-xs font-semibold text-sky-800 block mt-0.5">
                         {m.t_cargo_tipo}
                       </span>
-                      
                     </div>
                   </div>
 
@@ -440,8 +534,24 @@ export const MembrosTab: React.FC<MembrosTabProps> = ({
 
                 {/* Botões de Ação Rápida: WhatsApp / Telefone / E-mail */}
                 <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between">
-                  <div className="text-xs font-medium text-slate-500 truncate max-w-[160px]">
-                    {m.t_telefone ? formatPhoneMask(m.t_telefone) : (m.t_email || 'Sem contato salvo')}
+                  <div className="flex items-center space-x-2 truncate max-w-[200px]">
+                    <span className="text-xs font-medium text-slate-500 truncate">
+                      {m.t_telefone ? formatPhoneMask(m.t_telefone) : (m.t_email || 'Sem contato salvo')}
+                    </span>
+                    {m.id_missionario !== currentMember?.id_missionario && onSelectActiveMember && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          triggerHaptic('medium');
+                          onSelectActiveMember(m.id_missionario);
+                          onShowNotification(`Aparelho configurado para ${m.nm_missionario}`, 'info');
+                        }}
+                        className="text-[10px] font-semibold text-sky-700 hover:text-sky-900 bg-sky-50 hover:bg-sky-100 px-2 py-0.5 rounded-md transition shrink-0 cursor-pointer"
+                        title="Definir como usuário ativo deste aparelho"
+                      >
+                        Tornar Ativo
+                      </button>
+                    )}
                   </div>
 
                   <div className="flex items-center space-x-1.5">

@@ -21,6 +21,7 @@ interface DashboardTabProps {
   onNavigateTab?: (tab: 'visao' | 'relatorios' | 'agenda' | 'membros') => void;
   indicadores?: any;
   onOpenNotifications?: () => void;
+  onOpenProfile?: () => void;
   notificationCount?: number;
 }
 
@@ -32,6 +33,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   onResumeReport,
   onNavigateTab,
   onOpenNotifications,
+  onOpenProfile,
   notificationCount = 0
 }) => {
   const getInitials = (name?: string) => {
@@ -117,12 +119,19 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             )}
           </button>
           
-          <div 
-            title={missionarioName || 'Irmão do Ministério'}
-            className="w-9 h-9 rounded-full bg-[#0B1B2B] text-white flex items-center justify-center text-xs font-bold shadow-xs ring-2 ring-slate-100 select-none"
+          <button
+            type="button"
+            onClick={() => {
+              triggerHaptic('light');
+              onOpenProfile?.();
+            }}
+            aria-label={`Meu Perfil: ${missionarioName || 'Irmão do Ministério'}`}
+            title={`Meu Perfil: ${missionarioName || 'Irmão do Ministério'} (Toque para gerenciar)`}
+            className="group relative w-9 h-9 rounded-full bg-[#0B1B2B] text-white flex items-center justify-center text-xs font-bold shadow-xs ring-2 ring-slate-100 hover:ring-sky-500 hover:scale-105 active:scale-95 transition-all select-none cursor-pointer"
           >
             {getInitials(missionarioName)}
-          </div>
+            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+          </button>
         </div>
       </div>
 

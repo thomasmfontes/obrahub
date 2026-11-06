@@ -385,5 +385,28 @@ export function formatMinutesToDuration(minutes: number): string {
   return `${m}m`;
 }
 
+/**
+ * Extrai as iniciais de um nome, desconsiderando títulos eclesiásticos
+ */
+export function getInitials(name?: string): string {
+  if (!name || !name.trim()) return 'IR';
+  const clean = name.replace(/^(Pr\.|Miss\.|Ev\.|Dca\.|Dc\.|Ir\.|Irª\.)\s*/i, '').trim();
+  const parts = clean.split(' ').filter(Boolean);
+  if (parts.length === 0) return 'IR';
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+/**
+ * Formata máscara de telefone brasileiro (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
+ */
+export function formatPhoneMask(val: string): string {
+  const digits = val.replace(/\D/g, '').slice(0, 11);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
+
 
 
