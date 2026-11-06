@@ -9,6 +9,7 @@ import {
   Users, 
   FileText, 
   ChevronRight, 
+  ArrowRight,
   Loader2,
   Wallet,
   Plus,
@@ -75,10 +76,12 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
   polos = []
 }) => {
   const [attemptedNext, setAttemptedNext] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const fields = { missionario, poloDestino, dataSaida, dataRetorno };
   const errors = attemptedNext ? validateTrip(fields) : {};
   const formRef = useRef<HTMLDivElement>(null);
   const handleNext = () => {
+    if (isNavigating || isSaving) return;
     setAttemptedNext(true);
     const invalid = validateTrip(fields);
     const first = Object.keys(invalid)[0] as keyof TripFields | undefined;
@@ -87,7 +90,12 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
       formRef.current?.querySelector<HTMLElement>(`#trip-${first}`)?.focus();
       return;
     }
-    onNext();
+    triggerHaptic('medium');
+    setIsNavigating(true);
+    setTimeout(() => {
+      onNext();
+      setTimeout(() => setIsNavigating(false), 500);
+    }, 240);
   };
   const fieldError = (field: keyof TripFields) => errors[field]
     ? <p id={`trip-${field}-error`} className="text-xs text-red-700" role="alert">{errors[field]}</p>
@@ -433,11 +441,36 @@ export const WizardStep1: React.FC<WizardStep1Props> = ({
         <button 
           type="button"
           onClick={handleNext}
-          disabled={isSaving}
-          className="w-full h-12 bg-[#0B1B2B] hover:bg-[#132B45] text-white font-bold rounded-2xl text-xs flex items-center justify-center space-x-1.5 shadow-[0_4px_16px_rgba(11,27,43,0.25)] transition active:scale-[0.985] disabled:opacity-50 cursor-pointer"
+          disabled={isSaving || isNavigating}
+          className="relative overflow-hidden w-full h-12 bg-[#0B1B2B] hover:bg-[#132B45] text-white font-bold rounded-2xl text-xs flex items-center justify-center shadow-[0_4px_16px_rgba(11,27,43,0.25)] transition active:scale-[0.985] disabled:opacity-75 cursor-pointer group"
         >
-          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <span>Continuar para Diário</span>}
-          <ChevronRight className="w-4 h-4 ml-0.5" />
+          {isSaving ? (
+            <div className="flex items-center justify-center space-x-1.5">
+              <Loader2 className="w-4 h-4 animate-spin mr-1" />
+              <span>Salvando...</span>
+            </div>
+          ) : (
+            <>
+              {/* Conteúdo padrão */}
+              <div 
+                className={`flex items-center justify-center space-x-1.5 transition-all duration-200 ease-out ${
+                  isNavigating 
+                    ? 'opacity-0 scale-95 -translate-x-3 pointer-events-none' 
+                    : 'opacity-100 scale-100 translate-x-0'
+                }`}
+              >
+                <span>Continuar para Diário</span>
+                <ChevronRight className="w-4 h-4 ml-0.5 transition-transform duration-200 group-hover:translate-x-1" />
+              </div>
+
+              {/* Seta animada suave no centro ao clicar */}
+              {isNavigating && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <ArrowRight className="w-5 h-5 text-white stroke-[2.5] animate-arrow-slide-center" />
+                </div>
+              )}
+            </>
+          )}
         </button>
       </div>
     </>
