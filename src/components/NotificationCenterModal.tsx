@@ -127,35 +127,32 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
               Destinatários de E-mail
             </h3>
             <p className="text-[11px] text-slate-500 font-medium">
-              Contatos que recebem o relatório concluído
+              Contatos para envio da prestação de contas
             </p>
           </div>
         </div>
       }
       contentClassName="px-5 py-3 overflow-y-auto flex-1 space-y-4 overscroll-contain"
+      footer={
+        <button
+          type="button"
+          onClick={() => {
+            triggerHaptic('light');
+            onClose();
+          }}
+          className="w-full h-11 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-2xl text-xs transition active:scale-[0.985] cursor-pointer"
+        >
+          Concluir
+        </button>
+      }
     >
-      {/* Banner Informativo */}
-      <div className="bg-slate-50/90 border border-slate-200/80 rounded-2xl p-4 flex items-start space-x-3 shadow-2xs">
-        <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5 border border-emerald-100">
-          <ShieldCheck className="w-4 h-4 stroke-[2]" />
-        </div>
-        <div className="space-y-0.5 min-w-0 flex-1">
-          <h4 className="text-xs font-bold text-slate-900 leading-tight">
-            Prestação de Contas por E-mail
-          </h4>
-          <p className="text-[11px] text-slate-500 leading-relaxed">
-            Contatos marcados como <strong className="text-slate-700 font-semibold">Padrão</strong> são pré-selecionados ao concluir a viagem no Passo 3. Você pode adicionar conselheiros, tesoureiros ou secretários.
-          </p>
-        </div>
-      </div>
-
       {/* Cabeçalho da Lista + Botão Adicionar */}
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center space-x-2">
-          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-            Destinatários Cadastrados
-          </span>
-          <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/60">
+          <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            Destinatários
+          </h4>
+          <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/60">
             {destinatarios.length}
           </span>
         </div>
@@ -166,10 +163,10 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
               triggerHaptic('light');
               setIsAdding(true);
             }}
-            className="h-8 px-3 bg-[#0B1B2B] hover:bg-[#132B45] text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 shadow-xs cursor-pointer"
+            className="h-8 px-3 bg-[#0B1B2B] hover:bg-[#132B45] text-white rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition active:scale-95 shadow-xs cursor-pointer whitespace-nowrap shrink-0"
           >
             <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-            <span>Novo Destinatário</span>
+            <span>Adicionar</span>
           </button>
         )}
       </div>
@@ -178,7 +175,7 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
       {isAdding && (
         <form onSubmit={handleSave} className="bg-white border border-slate-200/90 rounded-2xl p-4 space-y-3.5 shadow-sm">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-            <span className="text-xs font-bold text-slate-900">Cadastrar Novo Destinatário</span>
+            <span className="text-xs font-bold text-slate-900">Novo Destinatário</span>
             <button
               type="button"
               onClick={resetForm}
@@ -198,7 +195,7 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
                 placeholder="Ex: Ir. Salvador, Tesouraria Central..."
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0B1B2B]/20 focus:border-[#0B1B2B]"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0B1B2B]/20 focus:border-[#0B1B2B]"
                 required
               />
             </div>
@@ -212,7 +209,7 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
                 placeholder="exemplo@ministerio.org"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0B1B2B]/20 focus:border-[#0B1B2B]"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0B1B2B]/20 focus:border-[#0B1B2B]"
                 required
               />
             </div>
@@ -226,7 +223,7 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
                 placeholder="Ex: Conselho Fiscal, Auditoria, Secretaria..."
                 value={cargo}
                 onChange={(e) => setCargo(e.target.value)}
-                className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0B1B2B]/20 focus:border-[#0B1B2B]"
+                className="w-full h-10 px-3 rounded-xl border border-slate-200 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0B1B2B]/20 focus:border-[#0B1B2B]"
               />
             </div>
 
@@ -239,7 +236,7 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
                   className="w-4 h-4 rounded border-slate-300 text-[#0B1B2B] focus:ring-[#0B1B2B]"
                 />
                 <span className="text-[11px] text-slate-700 font-medium">
-                  Selecionar por padrão ao preparar o e-mail de fechamento
+                  Selecionar por padrão ao preparar o e-mail
                 </span>
               </label>
             </div>
@@ -285,41 +282,43 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
           destinatarios.map((d) => (
             <div
               key={d.id_destinatario}
-              className="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-[0_1px_3px_rgba(15,23,42,0.03)] hover:border-slate-300 transition-all flex items-center justify-between gap-3"
+              className="bg-white rounded-2xl p-3.5 border border-slate-200/80 shadow-[0_1px_3px_rgba(15,23,42,0.02)] hover:border-slate-300 transition-all flex items-center justify-between gap-3"
             >
               <div className="flex items-center space-x-3 min-w-0 flex-1">
-                {/* Avatar com Iniciais */}
-                <div className="w-10 h-10 rounded-full bg-[#0B1B2B] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                {/* Avatar elegante */}
+                <div className="w-10 h-10 rounded-full bg-[#0B1B2B] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
                   {getInitials(d.nm_destinatario)}
                 </div>
 
                 {/* Detalhes do contato */}
                 <div className="min-w-0 flex-1">
-                  <h4 className="text-sm font-bold text-slate-900 truncate leading-tight">
-                    {d.nm_destinatario}
-                  </h4>
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-500 truncate mt-0.5">
-                    <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <div className="flex items-center space-x-1.5 flex-wrap gap-y-0.5">
+                    <h4 className="text-sm font-bold text-slate-900 truncate leading-tight">
+                      {d.nm_destinatario}
+                    </h4>
+                    {d.t_cargo_departamento && (
+                      <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-md truncate max-w-[130px]">
+                        {d.t_cargo_departamento}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center space-x-1.5 text-xs text-slate-500 truncate mt-0.5 font-normal">
+                    <Mail className="w-3 h-3 text-slate-400 shrink-0" />
                     <span className="truncate">{d.t_email}</span>
                   </div>
-                  {d.t_cargo_departamento && (
-                    <p className="text-[11px] font-medium text-slate-400 truncate mt-0.5">
-                      {d.t_cargo_departamento}
-                    </p>
-                  )}
                 </div>
               </div>
 
               {/* Ações: Toggle Padrão/Opcional + Excluir */}
-              <div className="flex items-center space-x-2 shrink-0">
+              <div className="flex items-center space-x-1.5 shrink-0">
                 <button
                   type="button"
-                  title={d.t_envio_automatico ? 'Marcado como padrão (toque para alterar)' : 'Opcional (toque para marcar como padrão)'}
+                  title={d.t_envio_automatico ? 'Marcado como padrão (toque para alternar)' : 'Opcional (toque para marcar como padrão)'}
                   onClick={() => handleToggle(d.id_destinatario, d.t_envio_automatico)}
                   className={`h-7 px-2.5 rounded-full text-[11px] font-semibold transition-all flex items-center space-x-1.5 active:scale-95 cursor-pointer ${
                     d.t_envio_automatico
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 hover:bg-emerald-100'
-                      : 'bg-slate-100 text-slate-500 border border-slate-200/70 hover:bg-slate-200'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                      : 'bg-slate-100 text-slate-500 border border-slate-200/80 hover:bg-slate-200'
                   }`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${d.t_envio_automatico ? 'bg-emerald-500' : 'bg-slate-400'}`} />
@@ -331,15 +330,22 @@ export const NotificationCenterModal: React.FC<NotificationCenterModalProps> = (
                   title="Excluir destinatário"
                   aria-label={`Excluir ${d.nm_destinatario}`}
                   onClick={() => handleDelete(d.id_destinatario, d.nm_destinatario)}
-                  className="w-8 h-8 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition active:scale-90 cursor-pointer"
+                  className="w-7 h-7 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition active:scale-90 cursor-pointer"
                 >
-                  <Trash2 className="w-4 h-4 stroke-[1.75]" />
+                  <Trash2 className="w-3.5 h-3.5 stroke-[1.75]" />
                 </button>
               </div>
             </div>
           ))
         )}
       </div>
+
+      {/* Nota de rodapé explicativa sutil estilo Apple */}
+      {destinatarios.length > 0 && (
+        <p className="text-center text-[11px] text-slate-400 font-medium px-4 pt-1">
+          Contatos marcados como <span className="text-slate-600 font-semibold">Padrão</span> são pré-selecionados ao concluir a viagem.
+        </p>
+      )}
     </BottomSheet>
   );
 };
