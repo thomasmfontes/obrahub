@@ -45,3 +45,6 @@ ehthumbs.db
 # Temporary files & caches
 .eslintcache
 *.tsbuildinfo
+
+.vercel
+.env*.local

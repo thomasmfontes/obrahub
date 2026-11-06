@@ -96,10 +96,18 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     <div className="desktop-page desktop-dashboard flex-1 px-4 pt-5 safe-pb-dock space-y-3.5 overflow-y-auto overscroll-y-contain">
       {/* Header Limpo */}
       <div className="flex items-center justify-between pt-1">
-        <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            Visão Geral
-          </h1>
+        <div className="flex items-center space-x-2.5">
+          <img 
+            src="/icon-192.png" 
+            alt="ObraHub Logo" 
+            className="w-10 h-10 rounded-2xl shadow-xs border border-slate-200/80 object-cover shrink-0 select-none" 
+          />
+          <div>
+            <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase block leading-none">ObraHub</span>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight mt-0.5 leading-tight">
+              Visão Geral
+            </h1>
+          </div>
         </div>
 
         <div className="flex items-center space-x-2.5">

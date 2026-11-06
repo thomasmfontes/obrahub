@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0F2942" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -13,8 +15,111 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <title>ObraHub - Gestão e Missões</title>
+    <style>
+      #splash-screen {
+        position: fixed;
+        inset: 0;
+        background-color: #0B1B2B;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      #splash-screen.splash-fade-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .splash-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+        animation: splash-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+      .splash-logo-wrapper {
+        position: relative;
+        width: 104px;
+        height: 104px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .splash-logo-img {
+        width: 96px;
+        height: 96px;
+        border-radius: 24px;
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 2;
+        object-fit: cover;
+      }
+      .splash-logo-glow {
+        position: absolute;
+        inset: -6px;
+        border-radius: 32px;
+        background: radial-gradient(circle, rgba(148, 188, 221, 0.3) 0%, rgba(11, 27, 43, 0) 72%);
+        filter: blur(14px);
+        z-index: 1;
+        animation: splash-pulse 2.4s infinite ease-in-out;
+      }
+      .splash-title {
+        color: #FFFFFF;
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        margin: 0;
+        line-height: 1.1;
+      }
+      .splash-progress-track {
+        width: 130px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        overflow: hidden;
+        position: relative;
+        margin-top: 6px;
+      }
+      .splash-progress-indicator {
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, #1C4A73, #94BCDD, #FFFFFF);
+        border-radius: 9999px;
+        position: absolute;
+        animation: splash-loading 1.3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      @keyframes splash-enter {
+        0% { transform: scale(0.9); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+      }
+      @keyframes splash-pulse {
+        0%, 100% { opacity: 0.35; transform: scale(0.96); }
+        50% { opacity: 0.85; transform: scale(1.08); }
+      }
+      @keyframes splash-loading {
+        0% { left: -50%; }
+        100% { left: 100%; }
+      }
+    </style>
   </head>
   <body class="bg-slate-100 min-h-screen">
+    <div id="splash-screen">
+      <div class="splash-content">
+        <div class="splash-logo-wrapper">
+          <img src="/icon-192.png" alt="ObraHub" class="splash-logo-img" />
+          <div class="splash-logo-glow"></div>
+        </div>
+        <h1 class="splash-title">ObraHub</h1>
+        <div class="splash-progress-track">
+          <div class="splash-progress-indicator"></div>
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

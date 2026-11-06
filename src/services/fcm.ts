@@ -144,7 +144,7 @@ export async function triggerLocalNotification(options: {
     const notif = new Notification(options.title, {
       body: options.body,
       icon: '/icon.svg',
-      badge: '/icon.svg',
+      badge: '/badge.png',
       tag: options.tag || 'obrahub-lembrete',
       data: options.data || { url: '/' }
     });
@@ -165,7 +165,7 @@ export async function triggerLocalNotification(options: {
           await reg.showNotification(options.title, {
             body: options.body,
             icon: '/icon.svg',
-            badge: '/icon.svg',
+            badge: '/badge.png',
             tag: options.tag || 'obrahub-lembrete',
             vibrate: [200, 100, 200],
             data: options.data || { url: '/' }

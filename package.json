@@ -21,6 +21,7 @@
     "test:ux10": "node scripts/test-report-review.mjs",
     "test:db": "node scripts/test-database-backend-sprint1.mjs && node scripts/test-database-backend-sprint2.mjs",
     "test:db2": "node scripts/test-database-backend-sprint2.mjs",
+    "generate:icons": "powershell -ExecutionPolicy Bypass -File scripts/generate-icons.ps1",
     "migrate:photos": "node scripts/migrate_base64_to_storage.mjs"
   },
   "dependencies": {

@@ -400,6 +400,18 @@ export default function App() {
     }, 5500);
   };
 
+  // Remove suavemente a tela Splash de inicialização
+  const dismissSplashScreen = () => {
+    if (typeof document === 'undefined') return;
+    const splash = document.getElementById('splash-screen');
+    if (splash && !splash.classList.contains('splash-fade-out')) {
+      splash.classList.add('splash-fade-out');
+      setTimeout(() => {
+        splash.remove();
+      }, 550);
+    }
+  };
+
   // Carrega os dados reais do banco Neon ao iniciar
   const loadDashboardData = async () => {
     if (loadingDashboardRef.current) return;
@@ -429,11 +441,14 @@ export default function App() {
     } finally {
       loadingDashboardRef.current = false;
       setIsLoadingData(false);
+      setTimeout(dismissSplashScreen, 400);
     }
   };
 
   useEffect(() => {
     loadDashboardData();
+    const safetyTimer = setTimeout(dismissSplashScreen, 3500);
+    return () => clearTimeout(safetyTimer);
   }, []);
 
   // Carrega configurações de lembretes do usuário
