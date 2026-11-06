@@ -363,11 +363,11 @@ export const UserSettingsModal: React.FC<UserSettingsModalProps> = ({
                     type="button"
                     onClick={handlePlaySound}
                     disabled={isPlayingSound}
-                    title="Ouvir som oficial"
-                    className="h-7 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold flex items-center space-x-1.5 transition active:scale-95 shrink-0 cursor-pointer"
+                    title="Ouvir toque personalizado"
+                    aria-label="Ouvir toque personalizado"
+                    className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition active:scale-90 shrink-0 cursor-pointer"
                   >
-                    <Volume2 className={`w-3.5 h-3.5 ${isPlayingSound ? 'text-emerald-600 animate-pulse' : 'text-slate-600'}`} />
-                    <span>{isPlayingSound ? 'Tocando...' : 'Ouvir'}</span>
+                    <Volume2 className={`w-4 h-4 ${isPlayingSound ? 'text-emerald-600 animate-pulse' : 'text-slate-600'}`} />
                   </button>
                 )}
               </div>
