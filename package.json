@@ -21,22 +21,16 @@
     "test:ux10": "node scripts/test-report-review.mjs",
     "test:db": "node scripts/test-database-backend-sprint1.mjs && node scripts/test-database-backend-sprint2.mjs",
     "test:db2": "node scripts/test-database-backend-sprint2.mjs",
-    "generate:icons": "powershell -ExecutionPolicy Bypass -File scripts/generate-icons.ps1",
     "migrate:photos": "node scripts/migrate_base64_to_storage.mjs"
   },
   "dependencies": {
     "@google/genai": "^3.0.0",
     "@neon/config": "^1.8.2",
-    "@neon/env": "^1.4.7",
     "@neondatabase/serverless": "^1.1.0",
-    "clsx": "^2.1.1",
     "firebase": "^12.19.0",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^4.2.1",
     "lucide-react": "^1.48.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "tailwind-merge": "^3.7.0",
     "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
