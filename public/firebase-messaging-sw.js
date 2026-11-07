@@ -25,7 +25,7 @@ if (apiKey && projectId) {
       const options = {
         body: payload.notification?.body || 'Registre suas atividades e despesas de hoje.',
         icon: '/icon-192.png',
-        badge: '/favicon-32.png',
+        badge: '/badge.png',
         sound: '/sounds/notification.mp3',
         vibrate: [200, 100, 200],
         data: payload.data || {}
